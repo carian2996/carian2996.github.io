@@ -329,6 +329,34 @@ inspect(corpus[1])
 Realizamos la limpieza del texto:
 
 
+{% highlight r %}
+require(tm)
+
+# ===== Procesamientos de los documentos =====
+skipWords <- function(x) removeWords(x, stopwords("spanish"))
+funcs <- list(content_transformer(tolower), 
+              removePunctuation, 
+              removeNumbers, 
+              stripWhitespace, 
+              skipWords)
+c_corpus <- tm_map(corpus, FUN = tm_reduce, tmFuns = funcs)
+
+# Cambiamos las palabras que se generan erroneamente
+for (j in seq(c_corpus)) c_corpus[[j]] <- gsub("bactuaríab", "actuaría", c_corpus[[j]])
+for (j in seq(c_corpus)) c_corpus[[j]] <- gsub("bactuariab", "actuaría", c_corpus[[j]])
+
+# Utlizando el algoritmos de Porter cambiamos las palabras plurales a singulares
+c_corpus <- tm_map(c_corpus, stemDocument, language = 'es')
+
+# Convertimos nuestros documentos a texto plano para agregar meta datos
+c_corpus <- tm_map(c_corpus, PlainTextDocument) 
+
+for (i in 1:length(c_corpus)) meta(c_corpus[[i]], 'id') <- actuarios$jobkey[i]
+for (i in 1:length(c_corpus)) meta(c_corpus[[i]], 'author') <- actuarios$company[i]
+for (i in 1:length(c_corpus)) meta(c_corpus[[i]], 'datetimestamp') <- actuarios$date[i]
+for (i in 1:length(c_corpus)) meta(c_corpus[[i]], 'heading') <- actuarios$jobtitle[i]
+for (i in 1:length(c_corpus)) meta(c_corpus[[i]], 'language') <- 'spanish'
+{% endhighlight %}
 
 Una vez hecho el procesamiento y transformación sobre nuestros datos, el resultado final es els siguiente:
 
@@ -346,6 +374,13 @@ c_corpus[[400]]['content']
 
 # Palabras más frecuentas en la busqueda de un actuario
 Para realizar todos nuestros análisis debemos de construir la llamada matriz de términos del documentos. Dicha matriz relaciona todas las palabras registradas en los textos y sus apariciones dentro del mismo. Con el siguiente código creamos dicha matriz.
+
+
+{% highlight r %}
+require(tm)
+(dtm <- DocumentTermMatrix(c_corpus))
+{% endhighlight %}
+
 
 
 {% highlight text %}
@@ -404,6 +439,12 @@ Por el momento, por tener demasiada escazes de términos, conservaremos todos y 
 <img src="/../figs/actuaryJobsMx/unnamed-chunk-10-1.png" title="center" alt="center" style="display: block; margin: auto;" />
 
 Removiendo las palabras menos escazas veamos que palabras más frecuentes obtenemos.
+
+
+{% highlight r %}
+(dtms <- removeSparseTerms(dtm, 0.75))
+{% endhighlight %}
+
 
 
 {% highlight text %}
