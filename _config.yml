@@ -8,12 +8,12 @@
 # Site settings
 title: Ian CR
 email: iancastillorosales@gmail.com
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://carian2996.github.io" # the base hostname & protocol for your site
+baseurl: ""
+url: "https://carian2996.github.io"
 twitter_username: carian_2996
 github_username:  carian2996
 paginate: 5
 
-gems: [jekyll-paginate, kramdown]
+gems: [jekyll-paginate, kramdown, jekyll-gist]
 # Build settings
 markdown: kramdown
