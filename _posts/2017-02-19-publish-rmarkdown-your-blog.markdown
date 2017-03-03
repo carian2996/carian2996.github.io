@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Publish your Analysis in Your Blog"
+title:  "Publish your Analysis in a Blog"
 date:   2017-02-19 11:10
 ---
 
