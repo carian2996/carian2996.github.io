@@ -4,7 +4,7 @@ title:  "Publish your Analysis in Your Blog"
 date:   2017-02-19 11:10
 ---
 
-This work is based on [Jon Zelner's blog](http://www.jonzelner.net/jekyll/knitr/r/2014/07/02/autogen-knitr/)
+This work is based on [Jon Zelner's blog](http://www.jonzelner.net/jekyll/knitr/r/2014/07/02/autogen-knitr/).
 
 Sharing your analysis can be an excellent way to learn from others (from commentaries, suggestions and critics) and also collaborate with your discoveries. One simple way to do that is publish on a personal blog and share it with your friends.
 
