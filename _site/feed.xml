@@ -5,33 +5,195 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 18 Feb 2017 15:45:34 -0600</pubDate>
-    <lastBuildDate>Sat, 18 Feb 2017 15:45:34 -0600</lastBuildDate>
+    <pubDate>Thu, 02 Mar 2017 23:36:09 -0600</pubDate>
+    <lastBuildDate>Thu, 02 Mar 2017 23:36:09 -0600</lastBuildDate>
     <generator>Jekyll v3.4.0</generator>
     
       <item>
-        <title>Render your Data Analysis on Personal Blog</title>
-        <description>&lt;p&gt;Sharing your analysis can be an excellent way to learn from others and collaborate with your discoveries.&lt;/p&gt;
+        <title>Publish your Analysis in Your Blog</title>
+        <description>&lt;p&gt;Sharing your analysis can be an excellent way to learn from others (from commentaries, suggestions and critics) and also collaborate with your discoveries. One simple way to do that is publish on a personal blog and share it with your friends.&lt;/p&gt;
 
-&lt;p&gt;In this entry you will learn how to do the following:&lt;/p&gt;
+&lt;p&gt;In this entry you will learn how to:&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;Create a personal web page to store your analysis.&lt;/li&gt;
-  &lt;li&gt;Manage and personalize your page.&lt;/li&gt;
-  &lt;li&gt;Automatize your analysis to publish it.&lt;/li&gt;
+  &lt;li&gt;Create a personal web page to store your papers.&lt;/li&gt;
+  &lt;li&gt;Manage and personalize your blog page.&lt;/li&gt;
+  &lt;li&gt;Automate your analysis (RMarkdown) to publish it.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;Let’s start! :grimacing:&lt;/p&gt;
+&lt;p&gt;Let’s start!&lt;/p&gt;
 
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
 &lt;h2 id=&quot;1-create-a-personal-web-page&quot;&gt;1. Create a personal web page&lt;/h2&gt;
-&lt;p&gt;Nowadays, create a web page can be really easy. We are going to work on &lt;a href=&quot;https://github.com/&quot;&gt;Github&lt;/a&gt;, that works as host and there we will easy deploy our blog.&lt;/p&gt;
+&lt;p&gt;Nowadays create a web page can be really easy. We will work with &lt;a href=&quot;https://github.com/&quot;&gt;Github&lt;/a&gt;, that works as host, and there we will deploy our blog.&lt;/p&gt;
 
-&lt;p&gt;The first thing to do is create an account on Github. You can learn more about Github &lt;a href=&quot;https://techcrunch.com/2012/07/14/what-exactly-is-github-anyway/&quot;&gt;here&lt;/a&gt; and after that, maybe some reading about the Github’s core, the really cool project call &lt;a href=&quot;https://git-scm.com/&quot;&gt;Git&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The first thing to do is create an account on Github. You can learn more about Github &lt;a href=&quot;https://techcrunch.com/2012/07/14/what-exactly-is-github-anyway/&quot;&gt;here&lt;/a&gt; and after that, maybe some reading about the Github’s core, a really cool project call &lt;a href=&quot;https://git-scm.com/&quot;&gt;Git&lt;/a&gt;.&lt;/p&gt;
 
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;http://localhost:4000/assets/signup-githup.png&quot; alt=&quot;signup&quot; class=&quot;center-image&quot; height=&quot;250px&quot; width=&quot;250px&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Tip: Choose wisely your username, it will be part of the URL for your blog&lt;/strong&gt;. Once you have signed and created an account you will need to create a new repository and convert it into your new web page. Simply navigate into your repositories and create a new one:&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;http://localhost:4000/assets/new-repo.png&quot; alt=&quot;new-repo&quot; class=&quot;center-image&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;You should name the new repository like this: username.github.io&lt;/strong&gt;. This will be the URL direction for your page: &lt;code class=&quot;highlighter-rouge&quot;&gt;http://username.github.io&lt;/code&gt;. Finally create a new file called &lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt; with the following sentence &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;h1&amp;gt;Hello world!&amp;lt;/h1&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;http://localhost:4000/assets/index.png&quot; alt=&quot;index&quot; class=&quot;center-image&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Add a nice description for the change in your repository and commit it.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;http://localhost:4000/assets/commit.png&quot; alt=&quot;commit&quot; class=&quot;center-image&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Why should we did all those steps? You can find how Git works in &lt;a href=&quot;https://try.github.io/levels/1/challenges/1&quot;&gt;this&lt;/a&gt; nice tutorial. Of course, learn how Git and Github work also will help you to gain a valuable skill for the future.&lt;/p&gt;
+
+&lt;p&gt;So, that’s all! You can put &lt;code class=&quot;highlighter-rouge&quot;&gt;http://username.github.io.&lt;/code&gt; in your browser and admire your creation!&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h2 id=&quot;2-personalize-your-blog&quot;&gt;2. Personalize your blog.&lt;/h2&gt;
+&lt;p&gt;To get started, we should work locally before upload our changes. To do that we need to clone our repository hosted in Github. You can learn more about cloning repositories &lt;a href=&quot;https://help.github.com/articles/cloning-a-repository/&quot;&gt;here&lt;/a&gt;. You can use &lt;a href=&quot;https://www.gitkraken.com/&quot;&gt;Gitkraken&lt;/a&gt; (a nice GUI for managing your Github repositories). Once you have cloned (or just downloaded) the repository, your local folder should look like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;http://localhost:4000/assets/local.png&quot; alt=&quot;local&quot; class=&quot;center-image&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now you can find a theme for your blog and put it into your folder. Search &lt;a href=&quot;http://google.com/#q=jekyll+themes&quot;&gt;here&lt;/a&gt; for cool themes. We will use the basic theme &lt;a href=&quot;https://github.com/poole/poole&quot;&gt;Poole&lt;/a&gt;. Again, clone or download the Poole repository into your blog folder, it should looks like this (with a bunch of strange folders) and an important file called &lt;code class=&quot;highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;http://localhost:4000/assets/poole.png&quot; alt=&quot;poole&quot; class=&quot;center-image&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can start changing this `_config.yml file to set your blog title, author name, social media and &lt;a href=&quot;http://jekyllrb.com/docs/configuration/&quot;&gt;more&lt;/a&gt;. But, how can I see my changes before deploying them into Github? Well, if you want to see locally your page, you will need to install the following dependencies:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.ruby-lang.org/es/&quot;&gt;Ruby&lt;/a&gt; (The programming language used).&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://rubygems.org/&quot;&gt;Gems&lt;/a&gt; (Ruby community’s gem hosting service. Gem == package).&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; (Jekyll is a simple, blog-aware, static site generator).&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;If you have read until here, you should be able to run the &lt;strong&gt;Jekyll&lt;/strong&gt; server and view your blog locally on &lt;code class=&quot;highlighter-rouge&quot;&gt;localhost:4000&lt;/code&gt;. Simply use the following sentences to run the blog:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;your/path/to/blog
+jekyll server
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And that is how (locally) your blog should looks like:&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;http://localhost:4000/assets/local-blog.png&quot; alt=&quot;local-blog&quot; class=&quot;center-image&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Tip: Don’t forget to set&lt;/strong&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;url: &quot;https://username.github.io&quot;&lt;/code&gt; &lt;strong&gt;in your&lt;/strong&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt; &lt;strong&gt;file to properly establish your root.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The only folder you need to modify in order to publish your reports is the &lt;code class=&quot;highlighter-rouge&quot;&gt;./_posts/&lt;/code&gt; folder. Here, every markdown document would be consider as a entry in your blog. For example if you create a markdown file called &lt;code class=&quot;highlighter-rouge&quot;&gt;2017-02-19-welcome.markdown&lt;/code&gt; and inside you write:&lt;/p&gt;
+
+&lt;div class=&quot;language-markdown highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;layout&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;post&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Welcome!&quot;&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;2017-02-19 12:00&lt;/span&gt;
+&lt;span class=&quot;nn&quot;&gt;---&lt;/span&gt;
+
+Hello, this is my blog. 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;You should be able to see the new entry like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;http://localhost:4000/assets/new-post.png&quot; alt=&quot;new-post&quot; class=&quot;center-image&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Lets deploy this simple entry. &lt;a href=&quot;https://try.github.io/levels/1/challenges/8&quot;&gt;Commit&lt;/a&gt; and &lt;a href=&quot;https://try.github.io/levels/1/challenges/11&quot;&gt;push&lt;/a&gt; your changes into Github (use Gitkraken to simplify those steps) and then you can go to &lt;code class=&quot;highlighter-rouge&quot;&gt;https://yourusername.github.io/2017/02/19/welcome/&lt;/code&gt; to see your first post.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Tip: If you have experience with HTML and CSS or YMAL use it for customize your blog&lt;/strong&gt;. More info &lt;a href=&quot;https://jekyllrb.com/docs/frontmatter/&quot;&gt;here&lt;/a&gt; and &lt;a href=&quot;https://webdesign.tutsplus.com/tutorials/how-to-set-up-a-jekyll-theme--cms-26332&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h2 id=&quot;3-automate-your-publishing&quot;&gt;3. Automate your publishing.&lt;/h2&gt;
+
+&lt;p&gt;Alright, now we have our blog settled, we can automate our publishing process with Rmarkdown files. First we need to create a new file called &lt;code class=&quot;highlighter-rouge&quot;&gt;render_post.R&lt;/code&gt; (it should be located in the blog’s root folder):&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;noscript&gt;&lt;pre&gt;# Modified from Jon Zelner&amp;#39;s original code
+
+#!/usr/bin/env Rscript
+
+input &amp;lt;- commandArgs(trailingOnly = TRUE)
+KnitPost &amp;lt;- function(input, base.url = &amp;quot;/&amp;quot;) {
+    require(knitr)
+    opts_knit$set(base.url = base.url)
+    fig.path &amp;lt;- paste0(&amp;quot;../figs/&amp;quot;, sub(&amp;quot;.Rmd$&amp;quot;, &amp;quot;&amp;quot;, basename(input)), &amp;quot;/&amp;quot;)
+    opts_chunk$set(fig.path = fig.path)
+    opts_chunk$set(fig.cap = &amp;quot;center&amp;quot;)
+    render_jekyll()
+    print(paste0(&amp;quot;../_posts/&amp;quot;, sub(&amp;quot;.Rmd$&amp;quot;, &amp;quot;&amp;quot;, basename(input)), &amp;quot;.markdown&amp;quot;))
+    knit(input, output = paste0(&amp;quot;../_posts/&amp;quot;, 
+                                Sys.Date(), 
+                                &amp;#39;-&amp;#39;, 
+                                sub(&amp;quot;.Rmd$&amp;quot;, &amp;quot;&amp;quot;, basename(input)), &amp;quot;.markdown&amp;quot;), 
+         envir = parent.frame())
+}
+
+KnitPost(input)&lt;/pre&gt;&lt;/noscript&gt;
+&lt;script src=&quot;https://gist.github.com/carian2996/a04c113cd13571689d42333dad55c755.js&quot;&gt; &lt;/script&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;The previous function will take the &lt;code class=&quot;highlighter-rouge&quot;&gt;Rmd&lt;/code&gt; file containing the analysis, it will run the file with R and will generate the possible outcomes (like images, tables or something else) to store them in a specific folder and finally, will put a &lt;code class=&quot;highlighter-rouge&quot;&gt;markdown&lt;/code&gt; file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_post&lt;/code&gt; folder.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Tip: In your Rmarkdown only set the title and date and one parameter &lt;code class=&quot;highlighter-rouge&quot;&gt;layout:&lt;/code&gt; as &lt;code class=&quot;highlighter-rouge&quot;&gt;post&lt;/code&gt;.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Use the RStudio’s example Rmarkdown file to test the function. First, open RStudio and create a new Rmarkdown. You can allocate your analysis in a folder named &lt;code class=&quot;highlighter-rouge&quot;&gt;_knitr&lt;/code&gt;. Your blog’s structure should look like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;http://localhost:4000/assets/test-rmd.png&quot; alt=&quot;test-rmd&quot; class=&quot;center-image&quot; width=&quot;250px&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally, you need to be able to run the &lt;code class=&quot;highlighter-rouge&quot;&gt;render_post.R&lt;/code&gt; as a function in you computer, use the following command to do that:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /your/that/to/blog
+sudo chmod +x render_post.R
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;After this, you need to run the R function with your &lt;code class=&quot;highlighter-rouge&quot;&gt;test.Rmd&lt;/code&gt;. Move into you &lt;code class=&quot;highlighter-rouge&quot;&gt;_knitr&lt;/code&gt; folder and run with the next command:&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;_knitr
+Rscript ../render_post.R test.Rmd
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now your Rmarkdown is on your blog! Some files should be added like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;http://localhost:4000/assets/render.png&quot; alt=&quot;render&quot; class=&quot;center-image&quot; width=&quot;250px&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;img src=&quot;http://localhost:4000/assets/render2.png&quot; alt=&quot;render2&quot; class=&quot;center-image&quot; /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Tip: Remember that your are working locally… The last step is commit your changes with git and push them into your remote repository (on Github), once you will do that, you can go to &lt;code class=&quot;highlighter-rouge&quot;&gt;https://username.github.io&lt;/code&gt; and check your great work :)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Congrats! Now you can work with your Rmarkdown files and just copy those files into your &lt;code class=&quot;highlighter-rouge&quot;&gt;_knitr&lt;/code&gt; folder and run again the magic function. Have fun!&lt;/p&gt;
 </description>
-        <pubDate>Sat, 18 Feb 2017 15:18:00 -0600</pubDate>
-        <link>http://localhost:4000/2017/02/18/render-rmarkdown-to-blog.html</link>
-        <guid isPermaLink="true">http://localhost:4000/2017/02/18/render-rmarkdown-to-blog.html</guid>
+        <pubDate>Sun, 19 Feb 2017 11:10:00 -0600</pubDate>
+        <link>http://localhost:4000/2017/02/19/publish-rmarkdown-your-blog.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2017/02/19/publish-rmarkdown-your-blog.html</guid>
         
         
       </item>
