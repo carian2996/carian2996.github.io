@@ -5,13 +5,15 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 02 Mar 2017 23:36:09 -0600</pubDate>
-    <lastBuildDate>Thu, 02 Mar 2017 23:36:09 -0600</lastBuildDate>
+    <pubDate>Thu, 02 Mar 2017 23:47:15 -0600</pubDate>
+    <lastBuildDate>Thu, 02 Mar 2017 23:47:15 -0600</lastBuildDate>
     <generator>Jekyll v3.4.0</generator>
     
       <item>
         <title>Publish your Analysis in Your Blog</title>
-        <description>&lt;p&gt;Sharing your analysis can be an excellent way to learn from others (from commentaries, suggestions and critics) and also collaborate with your discoveries. One simple way to do that is publish on a personal blog and share it with your friends.&lt;/p&gt;
+        <description>&lt;p&gt;This work is based on &lt;a href=&quot;http://www.jonzelner.net/jekyll/knitr/r/2014/07/02/autogen-knitr/&quot;&gt;Jon Zelner’s blog&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Sharing your analysis can be an excellent way to learn from others (from commentaries, suggestions and critics) and also collaborate with your discoveries. One simple way to do that is publish on a personal blog and share it with your friends.&lt;/p&gt;
 
 &lt;p&gt;In this entry you will learn how to:&lt;/p&gt;
 
