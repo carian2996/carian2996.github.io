@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Publish your Analysis in a Blog"
-date:   2017-03-04 14:00
+date:   2017-03-05 14:00
 ---
 
 This work is based on [Jon Zelner](http://www.jonzelner.net/jekyll/knitr/r/2014/07/02/autogen-knitr/)'s blog.
