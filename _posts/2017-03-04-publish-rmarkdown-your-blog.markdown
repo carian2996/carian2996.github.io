@@ -1,18 +1,18 @@
 ---
 layout: post
 title:  "Publish your Analysis in a Blog"
-date:   2017-02-19 11:10
+date:   2017-03-04 14:00
 ---
 
-This work is based on [Jon Zelner's blog](http://www.jonzelner.net/jekyll/knitr/r/2014/07/02/autogen-knitr/).
+This work is based on [Jon Zelner](http://www.jonzelner.net/jekyll/knitr/r/2014/07/02/autogen-knitr/)'s blog.
 
-Sharing your analysis can be an excellent way to learn from others (from commentaries, suggestions and critics) and also collaborate with your discoveries. One simple way to do that is publish on a personal blog and share it with your friends.
+Sharing your analysis can be an excellent way to learn from others (from commentaries, suggestions and criticism) and also collaborate with your discoveries. One simple way to do that is publish on a personal blog and share it with your friends.
 
 In this entry you will learn how to:
 
 1. Create a personal web page to store your papers.
 2. Manage and personalize your blog page.
-3. Automate your analysis (RMarkdown) to publish it.
+3. Publish automatically your RMarkdown files in your blog.
 
 Let's start!
 
@@ -22,7 +22,7 @@ Let's start!
 ## 1. Create a personal web page
 Nowadays create a web page can be really easy. We will work with [Github](https://github.com/), that works as host, and there we will deploy our blog. 
 
-The first thing to do is create an account on Github. You can learn more about Github [here](https://techcrunch.com/2012/07/14/what-exactly-is-github-anyway/) and after that, maybe some reading about the Github's core, a really cool project call [Git](https://git-scm.com/).
+The first thing we have do is create an account on Github. You can learn more about Github [here](https://techcrunch.com/2012/07/14/what-exactly-is-github-anyway/) and after that, maybe some reading about the Github's core, a really cool project call [Git](https://git-scm.com/).
 
 <br>
 ![signup]({{ site.url }}/assets/signup-githup.png){: .center-image height="250px" width="250px"}
@@ -66,7 +66,7 @@ Now you can find a theme for your blog and put it into your folder. Search [here
 ![poole]({{ site.url }}/assets/poole.png){: .center-image}
 <br>
 
-You can start changing this `_config.yml file to set your blog title, author name, social media and [more](http://jekyllrb.com/docs/configuration/). But, how can I see my changes before deploying them into Github? Well, if you want to see locally your page, you will need to install the following dependencies:
+You can start changing this `_config.yml` file to set your blog title, author name, social media and [more](http://jekyllrb.com/docs/configuration/). But, how can I see my changes before deploying them into Github? Well, if you want to see locally your page, you will need to install the following dependencies:
 
 1. [Ruby](https://www.ruby-lang.org/es/) (The programming language used).
 2. [Gems](https://rubygems.org/) (Ruby community’s gem hosting service. Gem == package).

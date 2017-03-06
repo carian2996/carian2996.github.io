@@ -5,22 +5,22 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 02 Mar 2017 23:50:57 -0600</pubDate>
-    <lastBuildDate>Thu, 02 Mar 2017 23:50:57 -0600</lastBuildDate>
+    <pubDate>Sun, 05 Mar 2017 18:56:34 -0600</pubDate>
+    <lastBuildDate>Sun, 05 Mar 2017 18:56:34 -0600</lastBuildDate>
     <generator>Jekyll v3.4.0</generator>
     
       <item>
         <title>Publish your Analysis in a Blog</title>
-        <description>&lt;p&gt;This work is based on &lt;a href=&quot;http://www.jonzelner.net/jekyll/knitr/r/2014/07/02/autogen-knitr/&quot;&gt;Jon Zelner’s blog&lt;/a&gt;.&lt;/p&gt;
+        <description>&lt;p&gt;This work is based on &lt;a href=&quot;http://www.jonzelner.net/jekyll/knitr/r/2014/07/02/autogen-knitr/&quot;&gt;Jon Zelner&lt;/a&gt;’s blog.&lt;/p&gt;
 
-&lt;p&gt;Sharing your analysis can be an excellent way to learn from others (from commentaries, suggestions and critics) and also collaborate with your discoveries. One simple way to do that is publish on a personal blog and share it with your friends.&lt;/p&gt;
+&lt;p&gt;Sharing your analysis can be an excellent way to learn from others (from commentaries, suggestions and criticism) and also collaborate with your discoveries. One simple way to do that is publish on a personal blog and share it with your friends.&lt;/p&gt;
 
 &lt;p&gt;In this entry you will learn how to:&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;Create a personal web page to store your papers.&lt;/li&gt;
   &lt;li&gt;Manage and personalize your blog page.&lt;/li&gt;
-  &lt;li&gt;Automate your analysis (RMarkdown) to publish it.&lt;/li&gt;
+  &lt;li&gt;Publish automatically your RMarkdown files in your blog.&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;Let’s start!&lt;/p&gt;
@@ -31,7 +31,7 @@
 &lt;h2 id=&quot;1-create-a-personal-web-page&quot;&gt;1. Create a personal web page&lt;/h2&gt;
 &lt;p&gt;Nowadays create a web page can be really easy. We will work with &lt;a href=&quot;https://github.com/&quot;&gt;Github&lt;/a&gt;, that works as host, and there we will deploy our blog.&lt;/p&gt;
 
-&lt;p&gt;The first thing to do is create an account on Github. You can learn more about Github &lt;a href=&quot;https://techcrunch.com/2012/07/14/what-exactly-is-github-anyway/&quot;&gt;here&lt;/a&gt; and after that, maybe some reading about the Github’s core, a really cool project call &lt;a href=&quot;https://git-scm.com/&quot;&gt;Git&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The first thing we have do is create an account on Github. You can learn more about Github &lt;a href=&quot;https://techcrunch.com/2012/07/14/what-exactly-is-github-anyway/&quot;&gt;here&lt;/a&gt; and after that, maybe some reading about the Github’s core, a really cool project call &lt;a href=&quot;https://git-scm.com/&quot;&gt;Git&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;br /&gt;
 &lt;img src=&quot;http://localhost:4000/assets/signup-githup.png&quot; alt=&quot;signup&quot; class=&quot;center-image&quot; height=&quot;250px&quot; width=&quot;250px&quot; /&gt;
@@ -75,7 +75,7 @@
 &lt;img src=&quot;http://localhost:4000/assets/poole.png&quot; alt=&quot;poole&quot; class=&quot;center-image&quot; /&gt;
 &lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;You can start changing this `_config.yml file to set your blog title, author name, social media and &lt;a href=&quot;http://jekyllrb.com/docs/configuration/&quot;&gt;more&lt;/a&gt;. But, how can I see my changes before deploying them into Github? Well, if you want to see locally your page, you will need to install the following dependencies:&lt;/p&gt;
+&lt;p&gt;You can start changing this &lt;code class=&quot;highlighter-rouge&quot;&gt;_config.yml&lt;/code&gt; file to set your blog title, author name, social media and &lt;a href=&quot;http://jekyllrb.com/docs/configuration/&quot;&gt;more&lt;/a&gt;. But, how can I see my changes before deploying them into Github? Well, if you want to see locally your page, you will need to install the following dependencies:&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;&lt;a href=&quot;https://www.ruby-lang.org/es/&quot;&gt;Ruby&lt;/a&gt; (The programming language used).&lt;/li&gt;
@@ -193,9 +193,9 @@ Rscript ../render_post.R test.Rmd
 
 &lt;p&gt;Congrats! Now you can work with your Rmarkdown files and just copy those files into your &lt;code class=&quot;highlighter-rouge&quot;&gt;_knitr&lt;/code&gt; folder and run again the magic function. Have fun!&lt;/p&gt;
 </description>
-        <pubDate>Sun, 19 Feb 2017 11:10:00 -0600</pubDate>
-        <link>http://localhost:4000/2017/02/19/publish-rmarkdown-your-blog.html</link>
-        <guid isPermaLink="true">http://localhost:4000/2017/02/19/publish-rmarkdown-your-blog.html</guid>
+        <pubDate>Sat, 04 Mar 2017 14:00:00 -0600</pubDate>
+        <link>http://localhost:4000/2017/03/04/publish-rmarkdown-your-blog.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2017/03/04/publish-rmarkdown-your-blog.html</guid>
         
         
       </item>
