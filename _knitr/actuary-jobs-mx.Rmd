@@ -1,0 +1,406 @@
+---
+title: "Actuarial Science Jobs in Mexico"
+output: post
+---
+
+```{r setup, include=FALSE, cache=TRUE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+```{r libraries, message=FALSE, warning=FALSE, include=FALSE, cache=TRUE}
+packages <- c("ggplot2", "dplyr", "stringr", "wordcloud", "RColorBrewer", "devtools",
+              "tm", "SnowballC", "devtools", "Hmisc", "cluster", "fpc", "knitr")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+    install.packages(setdiff(packages, rownames(installed.packages())))  
+} else print("Todos los paquetes instalados")
+
+devtools::install_github("dashee87/jobbR")
+devtools::install_github('diegovalle/mxmaps')
+
+lapply(packages, require, character.only = TRUE)
+require(jobbR)
+```
+
+```{r data, message=FALSE, warning=FALSE, include=FALSE, cache=FALSE}
+load('~/Documents/RCode/actuaryJobsMx/dataset.RData')
+```
+
+
+
+The present writing is based on the work of David Sheehan published [here](http://dashee87.github.io/data%20science/data-scientists-vs-data-analysts-part-1/).
+
+Likewise, the help of the following resources is appreciated:
+
+* [**Basic Text Mining in R**](https://rstudio-pubs-static.s3.amazonaws.com/31867_8236987cf0a8444e962ccd2aec46d9c3.html) de *RStudio*
+* [**jobbR**](https://github.com/dashee87/jobbR) de *David Sheehan*
+* [**mxmaps**](https://github.com/diegovalle/mxmaps) de *Diego Valle*
+* [**outlierKD**](https://datascienceplus.com/rscript/outlier.R) de *Klodian Dhana*
+
+## Goal
+This small analysis presents the current situation regarding the works offered in Mexico for the people graduated from the actuary career.
+
+According to the article published by El Universal (2015) in its note [Matemáticas vs desempleo](http://www.eluniversal.com.mx/articulo/periodismo-de-datos/2015/08/3/matematicas-vs-desempleo), one of the best paid careers belongs to actuaries, with an average salary of $21k pesos (MXN) a month and with a unemployment rate of 0%. Its analysis is based on the [Encuesta Nacional de Ocupación y Empleo](http://www.beta.inegi.org.mx/proyectos/enchogares/regulares/enoe/) and the data correspond to the first quarter of 2015.
+
+In this brief publication we will analyze job request focused on the people graduated from the degree in Actuarial Science<sup>*</sup>.
+
+The data, source code and report can be found directly [here](https://github.com/carian2996/RCode/tree/master/actuaryJobsMx).
+
+\* *We will assume that when making a query in the job portal Indeed with the query 'actuaria', the data thrown are related to the labor supply for actuaries. The query is done in order of 'Relevance'.*
+
+## The Data
+The data were obtained from [Indeed](https://www.indeed.com.mx/about), a job search website whose [API](https://www.indeed.com.mx/publisher) allows us to download the information related to the publication of a job offer.
+
+With the help of the package developed by **David Sheehan**, we can easily access the required data. A simple query with the following code is enough to obtain the data of the requests and their respective salaries:
+
+```
+# We obtain the information provided by the recruiting company
+actuarios <- jobSearch(publisher = API Key,         # Password obtained for API
+                      query = "actuaria",           # Search
+                      country = 'mx',               # Country
+                      all = TRUE)                   # Returns all posible data
+                      
+# Based on the job URL, we record the salary offered
+salarios <- lapply(actuarios$results.url,               # query URL
+                   function(x) getSalary(x, "USD"))     # We extract the salary offered
+                   
+# Each salary obtained is stored in a data.frame
+salarios <- do.call(rbind, salarios)
+
+# We append both dataset
+actuarios <- cbind(actuarios, salarios)
+```
+
+For this analysis `r nrow(actuarios)` job requests are used, since `r substr(max(actuarios$results.date), 6, 16)` to `r substr(min(actuarios$results.date), 6, 16)` with the characteristics of the previous query. The dataset used here can be downloaded from [here](https://raw.githubusercontent.com/carian2996/RCode/master/actuaryJobsMx/data.csv).
+
+## Cleaning Data
+The first thing we will do will be a quick cleaning of our data. The raw data contains the following information:
+
+```{r colnames_prev, echo=FALSE, message=FALSE, warning=FALSE}
+colnames(actuarios)
+```
+
+From the above variables we can note that the first 10 columns are not relevant, since they only represent meta data of our query.
+
+```{r head, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(head(actuarios[, 1:10], 5))
+```
+
+```{r delete-cols, message=FALSE, warning=FALSE, include=FALSE}
+actuarios <- actuarios[, -(1:10)]
+colnames(actuarios) <- gsub('results.', '', colnames(actuarios))
+```
+
+We remove the unnecessary columns and also, rename the columns eliminating the prefix 'results' for a simpler compression and more effective handling of the columns. The variables that we have to work then are the following:
+
+```{r colnames, echo=FALSE, message=FALSE, warning=FALSE}
+colnames(actuarios)
+```
+
+Let's examine more in detail what variables we have to work with. We do not include 'snippet' because it is the variable that has the original text of the requests, likewise 'url' as it only contains the address of the vacancy.
+
+```{r structure, echo=FALSE, warning=FALSE}
+str(actuarios[, -(9:10)])
+```
+
+Thus we see our data for the moment (without the job description or url, they are too long to be shown in a table):
+
+```{r , results='asis', echo=FALSE, message=FALSE, warning=FALSE}
+pander::pander(head(actuarios[, -(9:10)], 3))
+```
+
+## Companies that Most Employ Actuaries
+Once we have ready our data, we can begin to analyze and discover what interesting facts we can obtain. Using the information on the company that issues the vacancy, let's see who are the companies that most request positions for graduates of actuaries.
+
+```{r companies, echo=TRUE, message=FALSE, warning=FALSE}
+require(dplyr)
+
+actuarios <- actuarios %>%
+    mutate(company = tolower(company)) %>%
+    mutate(company = gsub('[[:punct:]]+', ' ', company)) %>%
+    mutate(company = gsub('[[:digit:]]+', ' ', company)) %>%
+    mutate(company = iconv(company, to='ASCII//TRANSLIT')) %>%
+    mutate(company = gsub('[[:punct:]]+', '', company))
+
+# We generate a frequencies table with the companies that offer the jobs
+compañias <- sort(table(actuarios$company), decreasing = T)
+
+# We remove companies with few positions
+dfCompañias <- data.frame(compañias[compañias / sum(compañias) > 0.009])   
+
+# We change the name of our columns
+colnames(dfCompañias) <- c('compañia', 'puestos')
+
+# We cut the name of the company (for visualization purposes)
+dfCompañias$compañia <- substr(dfCompañias$compañia, 1, 15)                 
+
+# We remove companies with no name
+dfCompañias <- dfCompañias[dfCompañias$compañia != '', ]
+
+dfCompañias$compañia <- factor(dfCompañias$compañia, 
+                               levels=dfCompañias$compañia)
+```
+
+
+```{r plot1, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
+require(ggplot2)
+
+ggplot2::ggplot(dfCompañias, aes(x = compañia, y = puestos)) + 
+    geom_bar(stat = "identity", fill="#1756A9") + 
+    theme(plot.subtitle = element_text(vjust = 1), 
+          plot.caption = element_text(vjust = 1), 
+          axis.text.x = element_text(angle = 40, hjust = 1), 
+          plot.title = element_text(size = 15, face = "bold", hjust = 0.5)) +
+    labs(title = "Companies with Highest Demand for Actuaries", 
+         x = NULL, y = "Total Requests")
+```
+
+We can see that among the companies with the most jobs offered, there are recruiters or head hunting companies, which does not leave a glimpse of the real company applying for the position. Although by far, we note that ** Banamex ** - now known as Citibanamex - is the institution with the most vacancies related to the 'actuaria' consultation.
+
+Recall that any analysis should not be taken as absolute truth, so we might think that this does not necessarily tell us that Banamex offers more employment for actuaries, we can consider that this financial institution is very large compared to many others or may even have An agreement with Indeed to place more vacancies than other companies.
+
+# The Actuary Job in the Mexico
+Since the first generation, the degree in Actuarial Science in Mexico City (1947), such degree has witnessed an outreach around the country. Taking into account that you can now study the career in up to 10 cities of the republic, we could expect the work of the actuary to be exercised throughout the country.
+
+Next, we will analyze how they are distributed the works in Mexico. The following code will prepare the data in such a way that with the help of the package of **Diego Valle** we will be able to graph our data with a map of Mexico using two lines of code.
+
+```{r mapa, echo=TRUE, message=FALSE, warning=FALSE}
+# We call the package mxmaps to prepare the template to use
+require(mxmaps)
+data("df_mxstate")
+
+# We create our table of frequencies by state
+mapa <- data.frame(table(actuarios$state))
+
+# We adapt the abbreviations of the states and join it with the template
+colnames(mapa) <- c('estado', 'puestos')
+mapa <- mapa[mapa$estado != '', ]
+mapa$estado <- c('BC', 'CHIH',  'CDMX', 'DGO', 'GTO', 'JAL', 'MEX', 'MICH', 'NL', 
+                 'PUE', 'QRO', 'QROO', 'SIN', 'SON', 'TAB', 'TAM', 'YUC')
+
+mapa <- merge(x=df_mxstate,y=mapa, by.x="state_abbr", by.y="estado", all.x = TRUE)
+mapa$value <- mapa$puestos
+
+# We replace the null values by the value 0
+mapa$value[is.na(mapa$value)] <- 0
+```
+
+The following map shows the relationship between the states that have a university (public or private) and the number of jobs offered in that entity or its surroundings.
+```{r mapa2, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
+mxstate_choropleth(mapa, title = "Trabajos ofrecidos en México") 
+```
+
+Of course, Mexico City, the State of Mexico, and Nuevo Leon top the list of states in the country where an actuary can exercise his or her job. Although it is worth noting the states of Jalisco, Yucatan, and Puebla that despite having less time with some university instituting the Actuarial career, are already beginning to stand out among the entities that require this type of professional.
+
+I would like to emphasize the data of the state of Coahuila. In my personal experience, I have never known companies that require actuaries in that entity, nor of acquaintances who have received offers in that part of the country. If you have any explanation on this atypical (atypical in my opinion) data that can clarify the situation, it would not hurt to comment.
+
+# (A litte bit of) Text Mining
+I would like to analyze the descriptions of the vacancies offered and be able to glimpse some of the requirements that are most asked of a person who wants to work as an actuary. What words are the most common when applying for an actuary or which skills are related to actuarial positions at management or managerial level.
+
+First of all, we must prepare our texts, put them together and carry out a process to be able to anaize them. With the following code we perform this task.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+require(tm)
+# We load and prepare the data corpus
+
+# We associate each document with its unique vacancy id
+reader <- readTabular(mapping = list(id = "jobkey", content = "snippet"))
+
+# We prepare the corpus and define the language of the text
+corpus <- Corpus(DataframeSource(actuarios), 
+                 readerControl = list(reader = reader, language = 'es'))
+```
+
+Once created the corpus with the following characteristics:
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+corpus
+```
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+inspect(corpus[1])
+```
+
+We clean the text:
+
+```{r}
+require(tm)
+
+# ===== Text Document Processing =====
+skipWords <- function(x) removeWords(x, stopwords("spanish"))
+funcs <- list(content_transformer(tolower), 
+              removePunctuation, 
+              removeNumbers, 
+              stripWhitespace, 
+              skipWords)
+c_corpus <- tm_map(corpus, FUN = tm_reduce, tmFuns = funcs)
+
+# We change the words that are generated erroneously
+for (j in seq(c_corpus)) c_corpus[[j]] <- gsub("bactuaríab", "actuaría", c_corpus[[j]])
+for (j in seq(c_corpus)) c_corpus[[j]] <- gsub("bactuariab", "actuaría", c_corpus[[j]])
+
+# Using the Porter's algorithm we change the plural words to singular
+c_corpus <- tm_map(c_corpus, stemDocument, language = 'es')
+
+# We convert our documents to plain text to add metadata
+c_corpus <- tm_map(c_corpus, PlainTextDocument) 
+
+for (i in 1:length(c_corpus)) meta(c_corpus[[i]], 'id') <- actuarios$jobkey[i]
+for (i in 1:length(c_corpus)) meta(c_corpus[[i]], 'author') <- actuarios$company[i]
+for (i in 1:length(c_corpus)) meta(c_corpus[[i]], 'datetimestamp') <- actuarios$date[i]
+for (i in 1:length(c_corpus)) meta(c_corpus[[i]], 'heading') <- actuarios$jobtitle[i]
+for (i in 1:length(c_corpus)) meta(c_corpus[[i]], 'language') <- 'spanish'
+```
+
+After the processing and transformation of our data, the final result is as follows:
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+c_corpus[[400]]['content']
+```
+
+# More Frequent Words
+To perform all of our analyzes we must construct the so-called matrix of terms of the documents. This matrix lists all the words registered in the texts and their occurrences within it. With the following code we create this matrix.
+
+```{r, message=FALSE, warning=FALSE}
+require(tm)
+(dtm <- DocumentTermMatrix(c_corpus))
+```
+
+Later on, we'll remove less frequent words using the 'removeSparseTerms' function. This part of the analysis is very sensitive, because by eliminating the less frequent words we could be skewing the meaning of these according to the context that includes the document.
+
+A great explanation of word 'sparse' in the term matrix can be seen [here](http://stackoverflow.com/a/33830637).
+
+With the following code we can see the most frequent words in our corpus:
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+freq <- sort(colSums(as.matrix(dtm)), decreasing=TRUE)
+head(freq)
+```
+
+Obviously, 'actuaria' turns out to be the most common word because our search was precisely that word.
+
+To understand more about the sparse in documents, let us analyze how often the terms are repeated in our matrix.
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+table(freq)
+```
+This means that there are `r max(table(freq))` terms that are found only in a text of a vacancy. `r table(freq)[2]` terms that are found only in two job descriptions and so on. Thus, we can say that among the more terms that only appear sporadically in the texts, the higher the index of sentences of terms.
+
+For the moment, by having too many terms, we will keep all of them and then remove them to compare results. The following graph shows the most frequent words without removing any words.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
+require(ggplot2)
+wf <- data.frame(word=names(freq), freq=freq) 
+
+ggplot2::ggplot(subset(wf, freq > 40), aes(word, freq)) + 
+    geom_bar(stat="identity") + 
+    theme(axis.text.x=element_text(angle=45, hjust=1), 
+          plot.title = element_text(size = 15, face = "bold", hjust = 0.5)) +
+    labs(title = "More Common Words", x = NULL, y = "Frequencies")
+```
+
+Removing the sparce words we see that more frequent words we obtain.
+
+```{r}
+(dtms <- removeSparseTerms(dtm, 0.75))
+```
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
+require(ggplot2)
+freq_sparse <- sort(colSums(as.matrix(dtms)), decreasing=TRUE)
+wf_sparse <- data.frame(word=names(freq_sparse), freq=freq_sparse) 
+
+ggplot2::ggplot(subset(wf_sparse, freq_sparse > 40), aes(word, freq)) + 
+    geom_bar(stat="identity") + 
+    theme(axis.text.x=element_text(angle=45, hjust=1), 
+          plot.title = element_text(size = 15, face = "bold", hjust = 0.5)) +
+    labs(title = "More Common Words", x = NULL, y = "Frequencies")
+```
+
+We can observe that decreasing almost half the sparce rate we eliminate more than 99% of our terms. Therefore, we will continue to use our array of terms with all words.
+
+Finally, let's see which words are more related to others. For example, we will look for the words most associated with the terms 'titulado' (degree obtained), 'gerente' (manager), 'datos' (data), 'seguros' (insurance).
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+findAssocs(x = dtm, terms = "titulado", corlimit = 0.15)
+findAssocs(x = dtm, terms = "gerente", corlimit = 0.3)
+findAssocs(x = dtm, terms = "datos", corlimit = 0.3)
+findAssocs(x = dtm, terms = "seguros", corlimit = 0.3)
+```
+
+For the term 'titulado' (degree obtained) there is no surprise, most words make reference to the final situation of the career ('intern'), to the requirements to work ('indispensable').
+
+The term 'manager' (manager) seemed to me to be more interesting, since it shows terms related to soft skills ('conciliate', 'coaching', 'agree', 'obtain'). This may suggest a development beyond the technician in someone seeking a management position.
+
+If an actuary would like to end up in the insurance business, he could expect a lot of intern positions, as the correlation between the word insurance and 'becario' (intern) is 0.41%. It would be useful to investigate terms such as 'brokerage' or 'reinsurance'.
+
+If we wanted to group the most related terms in all the vacancies we could use a simple analysis of conglomerates with an Euclidean method. The following code shows how to do this:
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE, fig.align="center"}
+# For this analysis if we remove the most scarce terms to use a simple model 
+# of clusters using a Euclidean measure
+dtmss <- removeSparseTerms(dtm, 0.9)
+
+d <- dist(t(dtmss), method="euclidian")   
+fit <- hclust(d=d, method="ward.D")   
+
+plot.new()
+plot(fit, hang=-1, xlab = "", ylab = "", sub = "")
+
+# Grouped with 4 clusters
+groups <- cutree(fit, k=4)   
+rect.hclust(fit, k=4, border="red")
+```
+
+We can notice that groups of words are related to the different areas in which an actuary can perform. 'Economics', 'finance' and 'management' are clearly shown in a group, while 'engineering', 'systems' and 'industrial' are grouped together in another conglomerate.
+
+Here we can interpret the result in different ways. Regularly, an actuarial vacancy is not specifically for someone graduating from that bachelor's degree alone. For the characteristics in the formation of an actuary, we can assume that the professional can perform tasks ranging from the Economy, to some engineering.
+
+# How much does an actuary earn in Mexico?
+
+Finally, let us analyze the average salary of an Actuary in Mexico. With the data collected we can calculate the average salary offered in the vacancies. Removing atypical values in our sample we can represent the salaries offered in the following graph:
+
+```{r, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+# filtering out jobs with no advertised salary or retaining those with annual salaries
+actSalarios <- actuarios[!is.na(actuarios$minSal), ]
+
+# plot annual salary cumulative distributions
+actSalarios$avg_salario <- mapply(function(x,y){(x+y)/2}, actSalarios$minSal, actSalarios$maxSal)
+actSalarios$type <- "actuario"
+
+
+source(file = "https://goo.gl/UUyEzD")
+outlierKD(actSalarios, avg_salario)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center"}
+load('~/Documents/RCode/actuaryJobsMx/dataset2.RData')
+
+ggplot(actSalarios, aes(avg_salario)) + stat_ecdf() + 
+    labs(title = "Salario Promedio del Actuario en México", 
+         x = "Salario Mensual (MXN)", y = "Proporción Acumulada") + 
+    theme(plot.subtitle = element_text(vjust = 1), 
+          plot.caption = element_text(vjust = 1), 
+          plot.title = element_text(size = 15, face = "bold", hjust = 0.5))
+```
+
+In the graph above we can see that although the average salary offered is only $13,000 MXN per month, 50% of jobs offer a fairly encouraging average salary if we take into account other careers.
+
+We can observe these data in more detail with the following instruction:
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+summary(actSalarios$avg_salario)
+```
+
+# Conclusion
+
+The work of the actuary in Mexico has been increasing during the last years in Mexico, every day more companies are benefited with the skills and knowledge that an actuary can offer. Although today, traditional companies (banks, insured and financial) are responsible for hiring actuaries for the most part, we can observe that little by little the actuary gains ground in other parts of the country and every day is more diversified responsibilities of an actuary
+
+A favorable bet is to study a bachelor's degree in Actuarial Science as the average salaries obtained exceed in good measure the national averages of any other career. Although the demand for new tools and knowledge makes Actuarial Science a demanding career, with a wide variety of topics to master, it seems that it is always well recomposed.
+
+**You can also reproduce this exercise by changing the query for your career and discover something unique!**
+
+Have fun!
+

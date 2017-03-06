@@ -5,8 +5,8 @@
     <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 05 Mar 2017 19:50:26 -0600</pubDate>
-    <lastBuildDate>Sun, 05 Mar 2017 19:50:26 -0600</lastBuildDate>
+    <pubDate>Sun, 05 Mar 2017 21:46:03 -0600</pubDate>
+    <lastBuildDate>Sun, 05 Mar 2017 21:46:03 -0600</lastBuildDate>
     <generator>Jekyll v3.4.0</generator>
     
       <item>
@@ -196,6 +196,471 @@ Rscript ../render_post.R test.Rmd
         <pubDate>Sun, 05 Mar 2017 14:00:00 -0600</pubDate>
         <link>http://localhost:4000/2017/03/05/publish-rmarkdown-your-blog.html</link>
         <guid isPermaLink="true">http://localhost:4000/2017/03/05/publish-rmarkdown-your-blog.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Actuarial Science Jobs in Mexico</title>
+        <description>&lt;p&gt;The present writing is based on the work of David Sheehan published &lt;a href=&quot;http://dashee87.github.io/data%20science/data-scientists-vs-data-analysts-part-1/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Likewise, the help of the following resources is appreciated:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://rstudio-pubs-static.s3.amazonaws.com/31867_8236987cf0a8444e962ccd2aec46d9c3.html&quot;&gt;&lt;strong&gt;Basic Text Mining in R&lt;/strong&gt;&lt;/a&gt; de &lt;em&gt;RStudio&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/dashee87/jobbR&quot;&gt;&lt;strong&gt;jobbR&lt;/strong&gt;&lt;/a&gt; de &lt;em&gt;David Sheehan&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/diegovalle/mxmaps&quot;&gt;&lt;strong&gt;mxmaps&lt;/strong&gt;&lt;/a&gt; de &lt;em&gt;Diego Valle&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://datascienceplus.com/rscript/outlier.R&quot;&gt;&lt;strong&gt;outlierKD&lt;/strong&gt;&lt;/a&gt; de &lt;em&gt;Klodian Dhana&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;goal&quot;&gt;Goal&lt;/h2&gt;
+&lt;p&gt;This small analysis presents the current situation regarding the works offered in Mexico for the people graduated from the actuary career.&lt;/p&gt;
+
+&lt;p&gt;According to the article published by El Universal (2015) in its note &lt;a href=&quot;http://www.eluniversal.com.mx/articulo/periodismo-de-datos/2015/08/3/matematicas-vs-desempleo&quot;&gt;Matemáticas vs desempleo&lt;/a&gt;, one of the best paid careers belongs to actuaries, with an average salary of $21k pesos (MXN) a month and with a unemployment rate of 0%. Its analysis is based on the &lt;a href=&quot;http://www.beta.inegi.org.mx/proyectos/enchogares/regulares/enoe/&quot;&gt;Encuesta Nacional de Ocupación y Empleo&lt;/a&gt; and the data correspond to the first quarter of 2015.&lt;/p&gt;
+
+&lt;p&gt;In this brief publication we will analyze job request focused on the people graduated from the degree in Actuarial Science&lt;sup&gt;*&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;The data, source code and report can be found directly &lt;a href=&quot;https://github.com/carian2996/RCode/tree/master/actuaryJobsMx&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;* &lt;em&gt;We will assume that when making a query in the job portal Indeed with the query ‘actuaria’, the data thrown are related to the labor supply for actuaries. The query is done in order of ‘Relevance’.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;the-data&quot;&gt;The Data&lt;/h2&gt;
+&lt;p&gt;The data were obtained from &lt;a href=&quot;https://www.indeed.com.mx/about&quot;&gt;Indeed&lt;/a&gt;, a job search website whose &lt;a href=&quot;https://www.indeed.com.mx/publisher&quot;&gt;API&lt;/a&gt; allows us to download the information related to the publication of a job offer.&lt;/p&gt;
+
+&lt;p&gt;With the help of the package developed by &lt;strong&gt;David Sheehan&lt;/strong&gt;, we can easily access the required data. A simple query with the following code is enough to obtain the data of the requests and their respective salaries:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# We obtain the information provided by the recruiting company
+actuarios &amp;lt;- jobSearch(publisher = API Key,         # Password obtained for API
+                      query = &quot;actuaria&quot;,           # Search
+                      country = 'mx',               # Country
+                      all = TRUE)                   # Returns all posible data
+                      
+# Based on the job URL, we record the salary offered
+salarios &amp;lt;- lapply(actuarios$results.url,               # query URL
+                   function(x) getSalary(x, &quot;USD&quot;))     # We extract the salary offered
+                   
+# Each salary obtained is stored in a data.frame
+salarios &amp;lt;- do.call(rbind, salarios)
+
+# We append both dataset
+actuarios &amp;lt;- cbind(actuarios, salarios)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;For this analysis 421 job requests are used, since 30 Nov 2016 to 02 Dec 2016 with the characteristics of the previous query. The dataset used here can be downloaded from &lt;a href=&quot;https://raw.githubusercontent.com/carian2996/RCode/master/actuaryJobsMx/data.csv&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;cleaning-data&quot;&gt;Cleaning Data&lt;/h2&gt;
+&lt;p&gt;The first thing we will do will be a quick cleaning of our data. The raw data contains the following information:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;##  [1] &quot;version&quot;                       &quot;query&quot;                        
+##  [3] &quot;location&quot;                      &quot;paginationPayload&quot;            
+##  [5] &quot;dupefilter&quot;                    &quot;highlight&quot;                    
+##  [7] &quot;totalResults&quot;                  &quot;start&quot;                        
+##  [9] &quot;end&quot;                           &quot;pageNumber&quot;                   
+## [11] &quot;results.jobtitle&quot;              &quot;results.company&quot;              
+## [13] &quot;results.city&quot;                  &quot;results.state&quot;                
+## [15] &quot;results.country&quot;               &quot;results.formattedLocation&quot;    
+## [17] &quot;results.source&quot;                &quot;results.date&quot;                 
+## [19] &quot;results.snippet&quot;               &quot;results.url&quot;                  
+## [21] &quot;results.onmousedown&quot;           &quot;results.jobkey&quot;               
+## [23] &quot;results.sponsored&quot;             &quot;results.expired&quot;              
+## [25] &quot;results.indeedApply&quot;           &quot;results.formattedLocationFull&quot;
+## [27] &quot;results.formattedRelativeTime&quot; &quot;results.stations&quot;             
+## [29] &quot;status&quot;                        &quot;period&quot;                       
+## [31] &quot;currency&quot;                      &quot;minSal&quot;                       
+## [33] &quot;maxSal&quot;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From the above variables we can note that the first 10 columns are not relevant, since they only represent meta data of our query.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;version&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;query&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;location&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;paginationPayload&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;dupefilter&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;highlight&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;totalResults&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;start&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;end&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;pageNumber&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;actuaria&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;TRUE&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;TRUE&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;421&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;actuaria&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;TRUE&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;TRUE&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;421&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;actuaria&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;TRUE&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;TRUE&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;421&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;actuaria&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;TRUE&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;TRUE&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;421&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;actuaria&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;TRUE&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;TRUE&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;421&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;1&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;25&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;We remove the unnecessary columns and also, rename the columns eliminating the prefix ‘results’ for a simpler compression and more effective handling of the columns. The variables that we have to work then are the following:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;##  [1] &quot;jobtitle&quot;              &quot;company&quot;              
+##  [3] &quot;city&quot;                  &quot;state&quot;                
+##  [5] &quot;country&quot;               &quot;formattedLocation&quot;    
+##  [7] &quot;source&quot;                &quot;date&quot;                 
+##  [9] &quot;snippet&quot;               &quot;url&quot;                  
+## [11] &quot;onmousedown&quot;           &quot;jobkey&quot;               
+## [13] &quot;sponsored&quot;             &quot;expired&quot;              
+## [15] &quot;indeedApply&quot;           &quot;formattedLocationFull&quot;
+## [17] &quot;formattedRelativeTime&quot; &quot;stations&quot;             
+## [19] &quot;status&quot;                &quot;period&quot;               
+## [21] &quot;currency&quot;              &quot;minSal&quot;               
+## [23] &quot;maxSal&quot;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s examine more in detail what variables we have to work with. We do not include ‘snippet’ because it is the variable that has the original text of the requests, likewise ‘url’ as it only contains the address of the vacancy.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;## 'data.frame':	421 obs. of  21 variables:
+##  $ jobtitle             : chr  &quot;ANALISTAS DE NEGOCIO&quot; &quot;DOCENTES&quot; &quot;Analista de Información (Inteligencia del negocio)&quot; &quot;Analista MIS Riesgo&quot; ...
+##  $ company              : chr  &quot;Grupo Bimbo&quot; &quot;Universidad Latina,S.C.&quot; &quot;Farmacias Similares&quot; &quot;Crédito Familiar&quot; ...
+##  $ city                 : chr  &quot;Ciudad de México&quot; &quot;Ciudad de México&quot; &quot;Ciudad de México&quot; &quot;Ciudad de México&quot; ...
+##  $ state                : chr  &quot;DIF&quot; &quot;DIF&quot; &quot;DIF&quot; &quot;DIF&quot; ...
+##  $ country              : chr  &quot;MX&quot; &quot;MX&quot; &quot;MX&quot; &quot;MX&quot; ...
+##  $ formattedLocation    : chr  &quot;Ciudad de México, D. F.&quot; &quot;Ciudad de México, D. F.&quot; &quot;Ciudad de México, D. F.&quot; &quot;Ciudad de México, D. F.&quot; ...
+##  $ source               : chr  &quot;Grupo Bimbo&quot; &quot;Universidad Latina&quot; &quot;bumeran.com.mx&quot; &quot;bumeran.com.mx&quot; ...
+##  $ date                 : chr  &quot;Sat, 31 Dec 2016 08:01:15 GMT&quot; &quot;Thu, 12 Jan 2017 12:21:48 GMT&quot; &quot;Fri, 20 Jan 2017 06:26:38 GMT&quot; &quot;Fri, 20 Jan 2017 06:26:00 GMT&quot; ...
+##  $ onmousedown          : chr  &quot;indeed_clk(this,'6181');&quot; &quot;indeed_clk(this,'6181');&quot; &quot;indeed_clk(this,'6181');&quot; &quot;indeed_clk(this,'6181');&quot; ...
+##  $ jobkey               : chr  &quot;57ad9f3bbcb615fb&quot; &quot;48f46e77f2650936&quot; &quot;567e12db3a84e957&quot; &quot;bfb75d03f35f6df2&quot; ...
+##  $ sponsored            : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ expired              : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ indeedApply          : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ formattedLocationFull: chr  &quot;Ciudad de México, D. F.&quot; &quot;Ciudad de México, D. F.&quot; &quot;Ciudad de México, D. F.&quot; &quot;Ciudad de México, D. F.&quot; ...
+##  $ formattedRelativeTime: chr  &quot;hace 20 días&quot; &quot;hace 8 días&quot; &quot;hace 19 horas&quot; &quot;hace 19 horas&quot; ...
+##  $ stations             : chr  &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...
+##  $ status               : Factor w/ 1 level &quot;unknown&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ period               : Factor w/ 1 level &quot;unknown&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ currency             : Factor w/ 1 level &quot;USD&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ minSal               : num  15000 NA NA NA NA 12000 NA NA NA 23100 ...
+##  $ maxSal               : num  17000 NA NA NA NA 12000 NA NA NA 23100 ...&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;companies-that-most-employ-actuaries&quot;&gt;Companies that Most Employ Actuaries&lt;/h2&gt;
+&lt;p&gt;Once we have ready our data, we can begin to analyze and discover what interesting facts we can obtain. Using the information on the company that issues the vacancy, let’s see who are the companies that most request positions for graduates of actuaries.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dplyr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;actuarios&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;actuarios&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mutate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;company&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tolower&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;company&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mutate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;company&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'[[:punct:]]+'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;' '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;company&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mutate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;company&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'[[:digit:]]+'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;' '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;company&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mutate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;company&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iconv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;company&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ASCII//TRANSLIT'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mutate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;company&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gsub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'[[:punct:]]+'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;company&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# We generate a frequencies table with the companies that offer the jobs
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;actuarios&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;company&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decreasing&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# We remove companies with few positions
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfCompa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data.frame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.009&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;   
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# We change the name of our columns
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;colnames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfCompa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'compañia'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'puestos'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# We cut the name of the company (for visualization purposes)
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfCompa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ia&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;substr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfCompa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ia&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;                 
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# We remove companies with no name
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfCompa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfCompa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfCompa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ia&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfCompa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ia&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;factor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfCompa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ia&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+                               &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;levels&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dfCompa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;compa&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;ñ&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ia&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/../figs/actuary-jobs-mx/plot1-1.png&quot; title=&quot;center&quot; alt=&quot;center&quot; style=&quot;display: block; margin: auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can see that among the companies with the most jobs offered, there are recruiters or head hunting companies, which does not leave a glimpse of the real company applying for the position. Although by far, we note that &lt;strong&gt;Banamex&lt;/strong&gt; - now known as Citibanamex - is the institution with the most vacancies related to the ‘actuaria’ consultation.&lt;/p&gt;
+
+&lt;p&gt;Recall that any analysis should not be taken as absolute truth, so we might think that this does not necessarily tell us that Banamex offers more employment for actuaries, we can consider that this financial institution is very large compared to many others or may even have An agreement with Indeed to place more vacancies than other companies.&lt;/p&gt;
+
+&lt;h1 id=&quot;the-actuary-job-in-the-mexico&quot;&gt;The Actuary Job in the Mexico&lt;/h1&gt;
+&lt;p&gt;Since the first generation, the degree in Actuarial Science in Mexico City (1947), such degree has witnessed an outreach around the country. Taking into account that you can now study the career in up to 10 cities of the republic, we could expect the work of the actuary to be exercised throughout the country.&lt;/p&gt;
+
+&lt;p&gt;Next, we will analyze how they are distributed the works in Mexico. The following code will prepare the data in such a way that with the help of the package of &lt;strong&gt;Diego Valle&lt;/strong&gt; we will be able to graph our data with a map of Mexico using two lines of code.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# We call the package mxmaps to prepare the template to use
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mxmaps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;df_mxstate&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# We create our table of frequencies by state
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data.frame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;actuarios&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# We adapt the abbreviations of the states and join it with the template
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;colnames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'estado'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'puestos'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;estado&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;estado&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'BC'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'CHIH'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'CDMX'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DGO'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'GTO'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'JAL'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'MEX'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'MICH'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'NL'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+                 &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'PUE'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'QRO'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'QROO'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'SIN'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'SON'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'TAB'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'TAM'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'YUC'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df_mxstate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;by.x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;state_abbr&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;by.y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;estado&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;all.x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;puestos&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# We replace the null values by the value 0
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;is.na&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapa&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The following map shows the relationship between the states that have a university (public or private) and the number of jobs offered in that entity or its surroundings.
+&lt;img src=&quot;/../figs/actuary-jobs-mx/mapa2-1.png&quot; title=&quot;center&quot; alt=&quot;center&quot; style=&quot;display: block; margin: auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Of course, Mexico City, the State of Mexico, and Nuevo Leon top the list of states in the country where an actuary can exercise his or her job. Although it is worth noting the states of Jalisco, Yucatan, and Puebla that despite having less time with some university instituting the Actuarial career, are already beginning to stand out among the entities that require this type of professional.&lt;/p&gt;
+
+&lt;p&gt;I would like to emphasize the data of the state of Coahuila. In my personal experience, I have never known companies that require actuaries in that entity, nor of acquaintances who have received offers in that part of the country. If you have any explanation on this atypical (atypical in my opinion) data that can clarify the situation, it would not hurt to comment.&lt;/p&gt;
+
+&lt;h1 id=&quot;a-litte-bit-of-text-mining&quot;&gt;(A litte bit of) Text Mining&lt;/h1&gt;
+&lt;p&gt;I would like to analyze the descriptions of the vacancies offered and be able to glimpse some of the requirements that are most asked of a person who wants to work as an actuary. What words are the most common when applying for an actuary or which skills are related to actuarial positions at management or managerial level.&lt;/p&gt;
+
+&lt;p&gt;First of all, we must prepare our texts, put them together and carry out a process to be able to anaize them. With the following code we perform this task.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# We load and prepare the data corpus
+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# We associate each document with its unique vacancy id
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reader&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;readTabular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapping&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;jobkey&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;snippet&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# We prepare the corpus and define the language of the text
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;corpus&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Corpus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DataframeSource&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;actuarios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+                 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;readerControl&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reader&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;language&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'es'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Once created the corpus with the following characteristics:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;corpus&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;## &amp;lt;&amp;lt;VCorpus&amp;gt;&amp;gt;
+## Metadata:  corpus specific: 0, document level (indexed): 0
+## Content:  documents: 421&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;inspect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;corpus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;## &amp;lt;&amp;lt;VCorpus&amp;gt;&amp;gt;
+## Metadata:  corpus specific: 0, document level (indexed): 0
+## Content:  documents: 1
+## 
+## [[1]]
+## &amp;lt;&amp;lt;PlainTextDocument&amp;gt;&amp;gt;
+## Metadata:  2
+## Content:  chars: 150&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We clean the text:&lt;/p&gt;
+
+&lt;p&gt;After the processing and transformation of our data, the final result is as follows:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;c_corpus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]][&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'content'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;## $content
+## [1] &quot;importante empresa seguros solicita lic actuaria  objetivo  responsable suscripcion seleccion riesgos ajuste normat&quot;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1 id=&quot;more-frequent-words&quot;&gt;More Frequent Words&lt;/h1&gt;
+&lt;p&gt;To perform all of our analyzes we must construct the so-called matrix of terms of the documents. This matrix lists all the words registered in the texts and their occurrences within it. With the following code we create this matrix.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;## &amp;lt;&amp;lt;DocumentTermMatrix (documents: 421, terms: 1175)&amp;gt;&amp;gt;
+## Non-/sparse entries: 4916/489759
+## Sparsity           : 99%
+## Maximal term length: 44
+## Weighting          : term frequency (tf)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Later on, we’ll remove less frequent words using the ‘removeSparseTerms’ function. This part of the analysis is very sensitive, because by eliminating the less frequent words we could be skewing the meaning of these according to the context that includes the document.&lt;/p&gt;
+
+&lt;p&gt;A great explanation of word ‘sparse’ in the term matrix can be seen &lt;a href=&quot;http://stackoverflow.com/a/33830637&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;With the following code we can see the most frequent words in our corpus:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;freq&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;colSums&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;as.matrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decreasing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;head&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;freq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;##       actuaria   licenciatura       economia administracion    matematicas 
+##            303            134            122            110             96 
+##           afin 
+##             92&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Obviously, ‘actuaria’ turns out to be the most common word because our search was precisely that word.&lt;/p&gt;
+
+&lt;p&gt;To understand more about the sparse in documents, let us analyze how often the terms are repeated in our matrix.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;freq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;## freq
+##   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18 
+## 626 201 110  44  38  26  22   6   9   9   6   5   7  10   4   3   1   5 
+##  19  20  21  24  25  26  27  29  32  33  34  35  39  45  49  53  72  82 
+##   1   4   2   4   2   3   2   3   1   1   1   4   1   1   2   1   1   1 
+##  86  87  92  96 110 122 134 303 
+##   1   1   1   1   1   1   1   1&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This means that there are 626 terms that are found only in a text of a vacancy. 201 terms that are found only in two job descriptions and so on. Thus, we can say that among the more terms that only appear sporadically in the texts, the higher the index of sentences of terms.&lt;/p&gt;
+
+&lt;p&gt;For the moment, by having too many terms, we will keep all of them and then remove them to compare results. The following graph shows the most frequent words without removing any words.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/../figs/actuary-jobs-mx/unnamed-chunk-10-1.png&quot; title=&quot;center&quot; alt=&quot;center&quot; style=&quot;display: block; margin: auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Removing the sparce words we see that more frequent words we obtain.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;## &amp;lt;&amp;lt;DocumentTermMatrix (documents: 421, terms: 3)&amp;gt;&amp;gt;
+## Non-/sparse entries: 554/709
+## Sparsity           : 56%
+## Maximal term length: 12
+## Weighting          : term frequency (tf)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/../figs/actuary-jobs-mx/unnamed-chunk-12-1.png&quot; title=&quot;center&quot; alt=&quot;center&quot; style=&quot;display: block; margin: auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can observe that decreasing almost half the sparce rate we eliminate more than 99% of our terms. Therefore, we will continue to use our array of terms with all words.&lt;/p&gt;
+
+&lt;p&gt;Finally, let’s see which words are more related to others. For example, we will look for the words most associated with the terms ‘titulado’ (degree obtained), ‘gerente’ (manager), ‘datos’ (data), ‘seguros’ (insurance).&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;findAssocs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;terms&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;titulado&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;corlimit&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.15&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;## $titulado
+##       pasante indispensable        tercer      conjunto      distrito 
+##          0.56          0.33          0.23          0.19          0.19 
+##  industriales           mex         monte          pied    titulacion 
+##          0.19          0.19          0.19          0.19          0.19 
+## investigacion    licenciado      actuaria 
+##          0.17          0.17          0.15&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;findAssocs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;terms&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;gerente&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;corlimit&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;## $gerente
+##            comercio                 tdc             acordar 
+##                0.47                0.47                0.33 
+## actuariamatematicas            agencias                back 
+##                0.33                0.33                0.33 
+##            bancario                 btl          cecoaching 
+##                0.33                0.33                0.33 
+##           conciliar                cuya             definir 
+##                0.33                0.33                0.33 
+##               equip        factibilidad        intelligence 
+##                0.33                0.33                0.33 
+##               mezcl             obtener          preferible 
+##                0.33                0.33                0.33 
+##                 rcb     recomendaciones        reingenieria 
+##                0.33                0.33                0.33 
+##          requeridos               sueñe           ubicacion 
+##                0.33                0.33                0.33&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;findAssocs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;terms&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;datos&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;corlimit&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;## $datos
+##      base    resolu validador  analisis 
+##      0.42      0.37      0.37      0.33&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;findAssocs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;terms&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;seguros&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;corlimit&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;## $seguros
+##    becarios  participar   colaborar   integrate      latino    positiva 
+##        0.41        0.39        0.38        0.38        0.38        0.38 
+## trayectoria    programa   corretaje     fianzas        life     mexican 
+##        0.38        0.35        0.31        0.31        0.31        0.31 
+##         new   reaseguro      siendo    universe        york 
+##        0.31        0.31        0.31        0.31        0.31&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;For the term ‘titulado’ (degree obtained) there is no surprise, most words make reference to the final situation of the career (‘intern’), to the requirements to work (‘indispensable’).&lt;/p&gt;
+
+&lt;p&gt;The term ‘manager’ (manager) seemed to me to be more interesting, since it shows terms related to soft skills (‘conciliate’, ‘coaching’, ‘agree’, ‘obtain’). This may suggest a development beyond the technician in someone seeking a management position.&lt;/p&gt;
+
+&lt;p&gt;If an actuary would like to end up in the insurance business, he could expect a lot of intern positions, as the correlation between the word insurance and ‘becario’ (intern) is 0.41%. It would be useful to investigate terms such as ‘brokerage’ or ‘reinsurance’.&lt;/p&gt;
+
+&lt;p&gt;If we wanted to group the most related terms in all the vacancies we could use a simple analysis of conglomerates with an Euclidean method. The following code shows how to do this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# For this analysis if we remove the most scarce terms to use a simple model 
+# of clusters using a Euclidean measure
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtmss&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;removeSparseTerms&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtmss&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;euclidian&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;   
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hclust&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ward.D&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;   
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot.new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hang&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xlab&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ylab&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sub&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Grouped with 4 clusters
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cutree&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;   
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rect.hclust&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;border&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;red&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/../figs/actuary-jobs-mx/unnamed-chunk-14-1.png&quot; title=&quot;center&quot; alt=&quot;center&quot; style=&quot;display: block; margin: auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can notice that groups of words are related to the different areas in which an actuary can perform. ‘Economics’, ‘finance’ and ‘management’ are clearly shown in a group, while ‘engineering’, ‘systems’ and ‘industrial’ are grouped together in another conglomerate.&lt;/p&gt;
+
+&lt;p&gt;Here we can interpret the result in different ways. Regularly, an actuarial vacancy is not specifically for someone graduating from that bachelor’s degree alone. For the characteristics in the formation of an actuary, we can assume that the professional can perform tasks ranging from the Economy, to some engineering.&lt;/p&gt;
+
+&lt;h1 id=&quot;how-much-does-an-actuary-earn-in-mexico&quot;&gt;How much does an actuary earn in Mexico?&lt;/h1&gt;
+
+&lt;p&gt;Finally, let us analyze the average salary of an Actuary in Mexico. With the data collected we can calculate the average salary offered in the vacancies. Removing atypical values in our sample we can represent the salaries offered in the following graph:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/../figs/actuary-jobs-mx/unnamed-chunk-16-1.png&quot; title=&quot;center&quot; alt=&quot;center&quot; style=&quot;display: block; margin: auto;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In the graph above we can see that although the average salary offered is only $13,000 MXN per month, 50% of jobs offer a fairly encouraging average salary if we take into account other careers.&lt;/p&gt;
+
+&lt;p&gt;We can observe these data in more detail with the following instruction:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;n&quot;&gt;summary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;actSalarios&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avg_salario&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##    2000   10000   13000   15700   20000   42500      10&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;The work of the actuary in Mexico has been increasing during the last years in Mexico, every day more companies are benefited with the skills and knowledge that an actuary can offer. Although today, traditional companies (banks, insured and financial) are responsible for hiring actuaries for the most part, we can observe that little by little the actuary gains ground in other parts of the country and every day is more diversified responsibilities of an actuary&lt;/p&gt;
+
+&lt;p&gt;A favorable bet is to study a bachelor’s degree in Actuarial Science as the average salaries obtained exceed in good measure the national averages of any other career. Although the demand for new tools and knowledge makes Actuarial Science a demanding career, with a wide variety of topics to master, it seems that it is always well recomposed.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;You can also reproduce this exercise by changing the query for your career and discover something unique!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Have fun!&lt;/p&gt;
+
+</description>
+        <pubDate>Sun, 15 Jan 2017 12:00:00 -0600</pubDate>
+        <link>http://localhost:4000/2017/01/15/actuary-jobs-mx.html</link>
+        <guid isPermaLink="true">http://localhost:4000/2017/01/15/actuary-jobs-mx.html</guid>
         
         
       </item>

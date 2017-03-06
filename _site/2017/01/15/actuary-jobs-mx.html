@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Actuarial Science Jobs in Mexico</title>
+  <meta name="description" content="The present writing is based on the work of David Sheehan published here.">
+  <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic|Source+Sans+Pro:400,700,200,300|Josefin+Sans:400,600,700,300' rel='stylesheet' type='text/css'>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="canonical" href="http://localhost:4000/2017/01/15/actuary-jobs-mx.html">
+  <link rel="alternate" type="application/rss+xml" title="Ian CR" href="http://localhost:4000/feed.xml">
+</head>
+
+
+  <body>
+
+    
+<div class="wrapper">
+  <center> <a href="/index.html"><div class="site-title">   Ian CR </div></a></center>
+</div>
+<div class="wrapper site-description">
+<center>   </center>
+</div>
+<div class="wrapper">
+  <div class="trigger site-navigation">
+    <a class="page-link" href="http://localhost:4000">HOME</a>
+
+    
+    
+
+    <span class="exclamationMark">/</span><a class="page-link" href="/about/">About Me</a>
+    
+    
+    
+    
+    
+    
+    
+
+    <span class="exclamationMark">/</span><a class="page-link" href="/links/">Links</a>
+    
+    
+    
+    
+  </div>
+</div>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline"><a class="post-title-link"  href="/2017/01/15/actuary-jobs-mx.html">Actuarial Science Jobs in Mexico</a></h1>
+  <center>  <p class="post-meta"><time datetime="2017-01-15T12:00:00-06:00" itemprop="datePublished">Jan 15, 2017</time></p>
+    
+   </center>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>The present writing is based on the work of David Sheehan published <a href="http://dashee87.github.io/data%20science/data-scientists-vs-data-analysts-part-1/">here</a>.</p>
+
+<p>Likewise, the help of the following resources is appreciated:</p>
+
+<ul>
+  <li><a href="https://rstudio-pubs-static.s3.amazonaws.com/31867_8236987cf0a8444e962ccd2aec46d9c3.html"><strong>Basic Text Mining in R</strong></a> de <em>RStudio</em></li>
+  <li><a href="https://github.com/dashee87/jobbR"><strong>jobbR</strong></a> de <em>David Sheehan</em></li>
+  <li><a href="https://github.com/diegovalle/mxmaps"><strong>mxmaps</strong></a> de <em>Diego Valle</em></li>
+  <li><a href="https://datascienceplus.com/rscript/outlier.R"><strong>outlierKD</strong></a> de <em>Klodian Dhana</em></li>
+</ul>
+
+<h2 id="goal">Goal</h2>
+<p>This small analysis presents the current situation regarding the works offered in Mexico for the people graduated from the actuary career.</p>
+
+<p>According to the article published by El Universal (2015) in its note <a href="http://www.eluniversal.com.mx/articulo/periodismo-de-datos/2015/08/3/matematicas-vs-desempleo">Matemáticas vs desempleo</a>, one of the best paid careers belongs to actuaries, with an average salary of $21k pesos (MXN) a month and with a unemployment rate of 0%. Its analysis is based on the <a href="http://www.beta.inegi.org.mx/proyectos/enchogares/regulares/enoe/">Encuesta Nacional de Ocupación y Empleo</a> and the data correspond to the first quarter of 2015.</p>
+
+<p>In this brief publication we will analyze job request focused on the people graduated from the degree in Actuarial Science<sup>*</sup>.</p>
+
+<p>The data, source code and report can be found directly <a href="https://github.com/carian2996/RCode/tree/master/actuaryJobsMx">here</a>.</p>
+
+<p>* <em>We will assume that when making a query in the job portal Indeed with the query ‘actuaria’, the data thrown are related to the labor supply for actuaries. The query is done in order of ‘Relevance’.</em></p>
+
+<h2 id="the-data">The Data</h2>
+<p>The data were obtained from <a href="https://www.indeed.com.mx/about">Indeed</a>, a job search website whose <a href="https://www.indeed.com.mx/publisher">API</a> allows us to download the information related to the publication of a job offer.</p>
+
+<p>With the help of the package developed by <strong>David Sheehan</strong>, we can easily access the required data. A simple query with the following code is enough to obtain the data of the requests and their respective salaries:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># We obtain the information provided by the recruiting company
+actuarios &lt;- jobSearch(publisher = API Key,         # Password obtained for API
+                      query = "actuaria",           # Search
+                      country = 'mx',               # Country
+                      all = TRUE)                   # Returns all posible data
+                      
+# Based on the job URL, we record the salary offered
+salarios &lt;- lapply(actuarios$results.url,               # query URL
+                   function(x) getSalary(x, "USD"))     # We extract the salary offered
+                   
+# Each salary obtained is stored in a data.frame
+salarios &lt;- do.call(rbind, salarios)
+
+# We append both dataset
+actuarios &lt;- cbind(actuarios, salarios)
+</code></pre>
+</div>
+
+<p>For this analysis 421 job requests are used, since 30 Nov 2016 to 02 Dec 2016 with the characteristics of the previous query. The dataset used here can be downloaded from <a href="https://raw.githubusercontent.com/carian2996/RCode/master/actuaryJobsMx/data.csv">here</a>.</p>
+
+<h2 id="cleaning-data">Cleaning Data</h2>
+<p>The first thing we will do will be a quick cleaning of our data. The raw data contains the following information:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">##  [1] "version"                       "query"                        
+##  [3] "location"                      "paginationPayload"            
+##  [5] "dupefilter"                    "highlight"                    
+##  [7] "totalResults"                  "start"                        
+##  [9] "end"                           "pageNumber"                   
+## [11] "results.jobtitle"              "results.company"              
+## [13] "results.city"                  "results.state"                
+## [15] "results.country"               "results.formattedLocation"    
+## [17] "results.source"                "results.date"                 
+## [19] "results.snippet"               "results.url"                  
+## [21] "results.onmousedown"           "results.jobkey"               
+## [23] "results.sponsored"             "results.expired"              
+## [25] "results.indeedApply"           "results.formattedLocationFull"
+## [27] "results.formattedRelativeTime" "results.stations"             
+## [29] "status"                        "period"                       
+## [31] "currency"                      "minSal"                       
+## [33] "maxSal"</code></pre></figure>
+
+<p>From the above variables we can note that the first 10 columns are not relevant, since they only represent meta data of our query.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: right">version</th>
+      <th style="text-align: left">query</th>
+      <th style="text-align: left">location</th>
+      <th style="text-align: left">paginationPayload</th>
+      <th style="text-align: left">dupefilter</th>
+      <th style="text-align: left">highlight</th>
+      <th style="text-align: right">totalResults</th>
+      <th style="text-align: right">start</th>
+      <th style="text-align: right">end</th>
+      <th style="text-align: right">pageNumber</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: right">2</td>
+      <td style="text-align: left">actuaria</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">TRUE</td>
+      <td style="text-align: left">TRUE</td>
+      <td style="text-align: right">421</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">25</td>
+      <td style="text-align: right">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">2</td>
+      <td style="text-align: left">actuaria</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">TRUE</td>
+      <td style="text-align: left">TRUE</td>
+      <td style="text-align: right">421</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">25</td>
+      <td style="text-align: right">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">2</td>
+      <td style="text-align: left">actuaria</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">TRUE</td>
+      <td style="text-align: left">TRUE</td>
+      <td style="text-align: right">421</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">25</td>
+      <td style="text-align: right">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">2</td>
+      <td style="text-align: left">actuaria</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">TRUE</td>
+      <td style="text-align: left">TRUE</td>
+      <td style="text-align: right">421</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">25</td>
+      <td style="text-align: right">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: right">2</td>
+      <td style="text-align: left">actuaria</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">TRUE</td>
+      <td style="text-align: left">TRUE</td>
+      <td style="text-align: right">421</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">25</td>
+      <td style="text-align: right">0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>We remove the unnecessary columns and also, rename the columns eliminating the prefix ‘results’ for a simpler compression and more effective handling of the columns. The variables that we have to work then are the following:</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">##  [1] "jobtitle"              "company"              
+##  [3] "city"                  "state"                
+##  [5] "country"               "formattedLocation"    
+##  [7] "source"                "date"                 
+##  [9] "snippet"               "url"                  
+## [11] "onmousedown"           "jobkey"               
+## [13] "sponsored"             "expired"              
+## [15] "indeedApply"           "formattedLocationFull"
+## [17] "formattedRelativeTime" "stations"             
+## [19] "status"                "period"               
+## [21] "currency"              "minSal"               
+## [23] "maxSal"</code></pre></figure>
+
+<p>Let’s examine more in detail what variables we have to work with. We do not include ‘snippet’ because it is the variable that has the original text of the requests, likewise ‘url’ as it only contains the address of the vacancy.</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## 'data.frame':	421 obs. of  21 variables:
+##  $ jobtitle             : chr  "ANALISTAS DE NEGOCIO" "DOCENTES" "Analista de Información (Inteligencia del negocio)" "Analista MIS Riesgo" ...
+##  $ company              : chr  "Grupo Bimbo" "Universidad Latina,S.C." "Farmacias Similares" "Crédito Familiar" ...
+##  $ city                 : chr  "Ciudad de México" "Ciudad de México" "Ciudad de México" "Ciudad de México" ...
+##  $ state                : chr  "DIF" "DIF" "DIF" "DIF" ...
+##  $ country              : chr  "MX" "MX" "MX" "MX" ...
+##  $ formattedLocation    : chr  "Ciudad de México, D. F." "Ciudad de México, D. F." "Ciudad de México, D. F." "Ciudad de México, D. F." ...
+##  $ source               : chr  "Grupo Bimbo" "Universidad Latina" "bumeran.com.mx" "bumeran.com.mx" ...
+##  $ date                 : chr  "Sat, 31 Dec 2016 08:01:15 GMT" "Thu, 12 Jan 2017 12:21:48 GMT" "Fri, 20 Jan 2017 06:26:38 GMT" "Fri, 20 Jan 2017 06:26:00 GMT" ...
+##  $ onmousedown          : chr  "indeed_clk(this,'6181');" "indeed_clk(this,'6181');" "indeed_clk(this,'6181');" "indeed_clk(this,'6181');" ...
+##  $ jobkey               : chr  "57ad9f3bbcb615fb" "48f46e77f2650936" "567e12db3a84e957" "bfb75d03f35f6df2" ...
+##  $ sponsored            : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ expired              : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ indeedApply          : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ formattedLocationFull: chr  "Ciudad de México, D. F." "Ciudad de México, D. F." "Ciudad de México, D. F." "Ciudad de México, D. F." ...
+##  $ formattedRelativeTime: chr  "hace 20 días" "hace 8 días" "hace 19 horas" "hace 19 horas" ...
+##  $ stations             : chr  "" "" "" "" ...
+##  $ status               : Factor w/ 1 level "unknown": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ period               : Factor w/ 1 level "unknown": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ currency             : Factor w/ 1 level "USD": 1 1 1 1 1 1 1 1 1 1 ...
+##  $ minSal               : num  15000 NA NA NA NA 12000 NA NA NA 23100 ...
+##  $ maxSal               : num  17000 NA NA NA NA 12000 NA NA NA 23100 ...</code></pre></figure>
+
+<h2 id="companies-that-most-employ-actuaries">Companies that Most Employ Actuaries</h2>
+<p>Once we have ready our data, we can begin to analyze and discover what interesting facts we can obtain. Using the information on the company that issues the vacancy, let’s see who are the companies that most request positions for graduates of actuaries.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">require</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span><span class="w">
+
+</span><span class="n">actuarios</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">actuarios</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">mutate</span><span class="p">(</span><span class="n">company</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">company</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">mutate</span><span class="p">(</span><span class="n">company</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s1">'[[:punct:]]+'</span><span class="p">,</span><span class="w"> </span><span class="s1">' '</span><span class="p">,</span><span class="w"> </span><span class="n">company</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">mutate</span><span class="p">(</span><span class="n">company</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s1">'[[:digit:]]+'</span><span class="p">,</span><span class="w"> </span><span class="s1">' '</span><span class="p">,</span><span class="w"> </span><span class="n">company</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">mutate</span><span class="p">(</span><span class="n">company</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iconv</span><span class="p">(</span><span class="n">company</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="o">=</span><span class="s1">'ASCII//TRANSLIT'</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+    </span><span class="n">mutate</span><span class="p">(</span><span class="n">company</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gsub</span><span class="p">(</span><span class="s1">'[[:punct:]]+'</span><span class="p">,</span><span class="w"> </span><span class="s1">''</span><span class="p">,</span><span class="w"> </span><span class="n">company</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># We generate a frequencies table with the companies that offer the jobs
+</span><span class="n">compa</span><span class="err">ñ</span><span class="n">ias</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sort</span><span class="p">(</span><span class="n">table</span><span class="p">(</span><span class="n">actuarios</span><span class="o">$</span><span class="n">company</span><span class="p">),</span><span class="w"> </span><span class="n">decreasing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># We remove companies with few positions
+</span><span class="n">dfCompa</span><span class="err">ñ</span><span class="n">ias</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">compa</span><span class="err">ñ</span><span class="n">ias</span><span class="p">[</span><span class="n">compa</span><span class="err">ñ</span><span class="n">ias</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">compa</span><span class="err">ñ</span><span class="n">ias</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.009</span><span class="p">])</span><span class="w">   
+
+</span><span class="c1"># We change the name of our columns
+</span><span class="n">colnames</span><span class="p">(</span><span class="n">dfCompa</span><span class="err">ñ</span><span class="n">ias</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s1">'compañia'</span><span class="p">,</span><span class="w"> </span><span class="s1">'puestos'</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># We cut the name of the company (for visualization purposes)
+</span><span class="n">dfCompa</span><span class="err">ñ</span><span class="n">ias</span><span class="o">$</span><span class="n">compa</span><span class="err">ñ</span><span class="n">ia</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">substr</span><span class="p">(</span><span class="n">dfCompa</span><span class="err">ñ</span><span class="n">ias</span><span class="o">$</span><span class="n">compa</span><span class="err">ñ</span><span class="n">ia</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">15</span><span class="p">)</span><span class="w">                 
+
+</span><span class="c1"># We remove companies with no name
+</span><span class="n">dfCompa</span><span class="err">ñ</span><span class="n">ias</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dfCompa</span><span class="err">ñ</span><span class="n">ias</span><span class="p">[</span><span class="n">dfCompa</span><span class="err">ñ</span><span class="n">ias</span><span class="o">$</span><span class="n">compa</span><span class="err">ñ</span><span class="n">ia</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">''</span><span class="p">,</span><span class="w"> </span><span class="p">]</span><span class="w">
+
+</span><span class="n">dfCompa</span><span class="err">ñ</span><span class="n">ias</span><span class="o">$</span><span class="n">compa</span><span class="err">ñ</span><span class="n">ia</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">factor</span><span class="p">(</span><span class="n">dfCompa</span><span class="err">ñ</span><span class="n">ias</span><span class="o">$</span><span class="n">compa</span><span class="err">ñ</span><span class="n">ia</span><span class="p">,</span><span class="w"> 
+                               </span><span class="n">levels</span><span class="o">=</span><span class="n">dfCompa</span><span class="err">ñ</span><span class="n">ias</span><span class="o">$</span><span class="n">compa</span><span class="err">ñ</span><span class="n">ia</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/../figs/actuary-jobs-mx/plot1-1.png" title="center" alt="center" style="display: block; margin: auto;" /></p>
+
+<p>We can see that among the companies with the most jobs offered, there are recruiters or head hunting companies, which does not leave a glimpse of the real company applying for the position. Although by far, we note that <strong>Banamex</strong> - now known as Citibanamex - is the institution with the most vacancies related to the ‘actuaria’ consultation.</p>
+
+<p>Recall that any analysis should not be taken as absolute truth, so we might think that this does not necessarily tell us that Banamex offers more employment for actuaries, we can consider that this financial institution is very large compared to many others or may even have An agreement with Indeed to place more vacancies than other companies.</p>
+
+<h1 id="the-actuary-job-in-the-mexico">The Actuary Job in the Mexico</h1>
+<p>Since the first generation, the degree in Actuarial Science in Mexico City (1947), such degree has witnessed an outreach around the country. Taking into account that you can now study the career in up to 10 cities of the republic, we could expect the work of the actuary to be exercised throughout the country.</p>
+
+<p>Next, we will analyze how they are distributed the works in Mexico. The following code will prepare the data in such a way that with the help of the package of <strong>Diego Valle</strong> we will be able to graph our data with a map of Mexico using two lines of code.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># We call the package mxmaps to prepare the template to use
+</span><span class="n">require</span><span class="p">(</span><span class="n">mxmaps</span><span class="p">)</span><span class="w">
+</span><span class="n">data</span><span class="p">(</span><span class="s2">"df_mxstate"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># We create our table of frequencies by state
+</span><span class="n">mapa</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data.frame</span><span class="p">(</span><span class="n">table</span><span class="p">(</span><span class="n">actuarios</span><span class="o">$</span><span class="n">state</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># We adapt the abbreviations of the states and join it with the template
+</span><span class="n">colnames</span><span class="p">(</span><span class="n">mapa</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s1">'estado'</span><span class="p">,</span><span class="w"> </span><span class="s1">'puestos'</span><span class="p">)</span><span class="w">
+</span><span class="n">mapa</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mapa</span><span class="p">[</span><span class="n">mapa</span><span class="o">$</span><span class="n">estado</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">''</span><span class="p">,</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="n">mapa</span><span class="o">$</span><span class="n">estado</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s1">'BC'</span><span class="p">,</span><span class="w"> </span><span class="s1">'CHIH'</span><span class="p">,</span><span class="w">  </span><span class="s1">'CDMX'</span><span class="p">,</span><span class="w"> </span><span class="s1">'DGO'</span><span class="p">,</span><span class="w"> </span><span class="s1">'GTO'</span><span class="p">,</span><span class="w"> </span><span class="s1">'JAL'</span><span class="p">,</span><span class="w"> </span><span class="s1">'MEX'</span><span class="p">,</span><span class="w"> </span><span class="s1">'MICH'</span><span class="p">,</span><span class="w"> </span><span class="s1">'NL'</span><span class="p">,</span><span class="w"> 
+                 </span><span class="s1">'PUE'</span><span class="p">,</span><span class="w"> </span><span class="s1">'QRO'</span><span class="p">,</span><span class="w"> </span><span class="s1">'QROO'</span><span class="p">,</span><span class="w"> </span><span class="s1">'SIN'</span><span class="p">,</span><span class="w"> </span><span class="s1">'SON'</span><span class="p">,</span><span class="w"> </span><span class="s1">'TAB'</span><span class="p">,</span><span class="w"> </span><span class="s1">'TAM'</span><span class="p">,</span><span class="w"> </span><span class="s1">'YUC'</span><span class="p">)</span><span class="w">
+
+</span><span class="n">mapa</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">merge</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">df_mxstate</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">mapa</span><span class="p">,</span><span class="w"> </span><span class="n">by.x</span><span class="o">=</span><span class="s2">"state_abbr"</span><span class="p">,</span><span class="w"> </span><span class="n">by.y</span><span class="o">=</span><span class="s2">"estado"</span><span class="p">,</span><span class="w"> </span><span class="n">all.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">mapa</span><span class="o">$</span><span class="n">value</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mapa</span><span class="o">$</span><span class="n">puestos</span><span class="w">
+
+</span><span class="c1"># We replace the null values by the value 0
+</span><span class="n">mapa</span><span class="o">$</span><span class="n">value</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">mapa</span><span class="o">$</span><span class="n">value</span><span class="p">)]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0</span></code></pre></figure>
+
+<p>The following map shows the relationship between the states that have a university (public or private) and the number of jobs offered in that entity or its surroundings.
+<img src="/../figs/actuary-jobs-mx/mapa2-1.png" title="center" alt="center" style="display: block; margin: auto;" /></p>
+
+<p>Of course, Mexico City, the State of Mexico, and Nuevo Leon top the list of states in the country where an actuary can exercise his or her job. Although it is worth noting the states of Jalisco, Yucatan, and Puebla that despite having less time with some university instituting the Actuarial career, are already beginning to stand out among the entities that require this type of professional.</p>
+
+<p>I would like to emphasize the data of the state of Coahuila. In my personal experience, I have never known companies that require actuaries in that entity, nor of acquaintances who have received offers in that part of the country. If you have any explanation on this atypical (atypical in my opinion) data that can clarify the situation, it would not hurt to comment.</p>
+
+<h1 id="a-litte-bit-of-text-mining">(A litte bit of) Text Mining</h1>
+<p>I would like to analyze the descriptions of the vacancies offered and be able to glimpse some of the requirements that are most asked of a person who wants to work as an actuary. What words are the most common when applying for an actuary or which skills are related to actuarial positions at management or managerial level.</p>
+
+<p>First of all, we must prepare our texts, put them together and carry out a process to be able to anaize them. With the following code we perform this task.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">require</span><span class="p">(</span><span class="n">tm</span><span class="p">)</span><span class="w">
+</span><span class="c1"># We load and prepare the data corpus
+</span><span class="w">
+</span><span class="c1"># We associate each document with its unique vacancy id
+</span><span class="n">reader</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTabular</span><span class="p">(</span><span class="n">mapping</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"jobkey"</span><span class="p">,</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"snippet"</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># We prepare the corpus and define the language of the text
+</span><span class="n">corpus</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">Corpus</span><span class="p">(</span><span class="n">DataframeSource</span><span class="p">(</span><span class="n">actuarios</span><span class="p">),</span><span class="w"> 
+                 </span><span class="n">readerControl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">reader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reader</span><span class="p">,</span><span class="w"> </span><span class="n">language</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'es'</span><span class="p">))</span></code></pre></figure>
+
+<p>Once created the corpus with the following characteristics:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">corpus</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## &lt;&lt;VCorpus&gt;&gt;
+## Metadata:  corpus specific: 0, document level (indexed): 0
+## Content:  documents: 421</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">inspect</span><span class="p">(</span><span class="n">corpus</span><span class="p">[</span><span class="m">1</span><span class="p">])</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## &lt;&lt;VCorpus&gt;&gt;
+## Metadata:  corpus specific: 0, document level (indexed): 0
+## Content:  documents: 1
+## 
+## [[1]]
+## &lt;&lt;PlainTextDocument&gt;&gt;
+## Metadata:  2
+## Content:  chars: 150</code></pre></figure>
+
+<p>We clean the text:</p>
+
+<p>After the processing and transformation of our data, the final result is as follows:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">c_corpus</span><span class="p">[[</span><span class="m">400</span><span class="p">]][</span><span class="s1">'content'</span><span class="p">]</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## $content
+## [1] "importante empresa seguros solicita lic actuaria  objetivo  responsable suscripcion seleccion riesgos ajuste normat"</code></pre></figure>
+
+<h1 id="more-frequent-words">More Frequent Words</h1>
+<p>To perform all of our analyzes we must construct the so-called matrix of terms of the documents. This matrix lists all the words registered in the texts and their occurrences within it. With the following code we create this matrix.</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## &lt;&lt;DocumentTermMatrix (documents: 421, terms: 1175)&gt;&gt;
+## Non-/sparse entries: 4916/489759
+## Sparsity           : 99%
+## Maximal term length: 44
+## Weighting          : term frequency (tf)</code></pre></figure>
+
+<p>Later on, we’ll remove less frequent words using the ‘removeSparseTerms’ function. This part of the analysis is very sensitive, because by eliminating the less frequent words we could be skewing the meaning of these according to the context that includes the document.</p>
+
+<p>A great explanation of word ‘sparse’ in the term matrix can be seen <a href="http://stackoverflow.com/a/33830637">here</a>.</p>
+
+<p>With the following code we can see the most frequent words in our corpus:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">freq</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sort</span><span class="p">(</span><span class="n">colSums</span><span class="p">(</span><span class="n">as.matrix</span><span class="p">(</span><span class="n">dtm</span><span class="p">)),</span><span class="w"> </span><span class="n">decreasing</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+</span><span class="n">head</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">##       actuaria   licenciatura       economia administracion    matematicas 
+##            303            134            122            110             96 
+##           afin 
+##             92</code></pre></figure>
+
+<p>Obviously, ‘actuaria’ turns out to be the most common word because our search was precisely that word.</p>
+
+<p>To understand more about the sparse in documents, let us analyze how often the terms are repeated in our matrix.</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">table</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## freq
+##   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18 
+## 626 201 110  44  38  26  22   6   9   9   6   5   7  10   4   3   1   5 
+##  19  20  21  24  25  26  27  29  32  33  34  35  39  45  49  53  72  82 
+##   1   4   2   4   2   3   2   3   1   1   1   4   1   1   2   1   1   1 
+##  86  87  92  96 110 122 134 303 
+##   1   1   1   1   1   1   1   1</code></pre></figure>
+
+<p>This means that there are 626 terms that are found only in a text of a vacancy. 201 terms that are found only in two job descriptions and so on. Thus, we can say that among the more terms that only appear sporadically in the texts, the higher the index of sentences of terms.</p>
+
+<p>For the moment, by having too many terms, we will keep all of them and then remove them to compare results. The following graph shows the most frequent words without removing any words.</p>
+
+<p><img src="/../figs/actuary-jobs-mx/unnamed-chunk-10-1.png" title="center" alt="center" style="display: block; margin: auto;" /></p>
+
+<p>Removing the sparce words we see that more frequent words we obtain.</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## &lt;&lt;DocumentTermMatrix (documents: 421, terms: 3)&gt;&gt;
+## Non-/sparse entries: 554/709
+## Sparsity           : 56%
+## Maximal term length: 12
+## Weighting          : term frequency (tf)</code></pre></figure>
+
+<p><img src="/../figs/actuary-jobs-mx/unnamed-chunk-12-1.png" title="center" alt="center" style="display: block; margin: auto;" /></p>
+
+<p>We can observe that decreasing almost half the sparce rate we eliminate more than 99% of our terms. Therefore, we will continue to use our array of terms with all words.</p>
+
+<p>Finally, let’s see which words are more related to others. For example, we will look for the words most associated with the terms ‘titulado’ (degree obtained), ‘gerente’ (manager), ‘datos’ (data), ‘seguros’ (insurance).</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">findAssocs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dtm</span><span class="p">,</span><span class="w"> </span><span class="n">terms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"titulado"</span><span class="p">,</span><span class="w"> </span><span class="n">corlimit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.15</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## $titulado
+##       pasante indispensable        tercer      conjunto      distrito 
+##          0.56          0.33          0.23          0.19          0.19 
+##  industriales           mex         monte          pied    titulacion 
+##          0.19          0.19          0.19          0.19          0.19 
+## investigacion    licenciado      actuaria 
+##          0.17          0.17          0.15</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">findAssocs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dtm</span><span class="p">,</span><span class="w"> </span><span class="n">terms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"gerente"</span><span class="p">,</span><span class="w"> </span><span class="n">corlimit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.3</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## $gerente
+##            comercio                 tdc             acordar 
+##                0.47                0.47                0.33 
+## actuariamatematicas            agencias                back 
+##                0.33                0.33                0.33 
+##            bancario                 btl          cecoaching 
+##                0.33                0.33                0.33 
+##           conciliar                cuya             definir 
+##                0.33                0.33                0.33 
+##               equip        factibilidad        intelligence 
+##                0.33                0.33                0.33 
+##               mezcl             obtener          preferible 
+##                0.33                0.33                0.33 
+##                 rcb     recomendaciones        reingenieria 
+##                0.33                0.33                0.33 
+##          requeridos               sueñe           ubicacion 
+##                0.33                0.33                0.33</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">findAssocs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dtm</span><span class="p">,</span><span class="w"> </span><span class="n">terms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"datos"</span><span class="p">,</span><span class="w"> </span><span class="n">corlimit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.3</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## $datos
+##      base    resolu validador  analisis 
+##      0.42      0.37      0.37      0.33</code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">findAssocs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dtm</span><span class="p">,</span><span class="w"> </span><span class="n">terms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"seguros"</span><span class="p">,</span><span class="w"> </span><span class="n">corlimit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.3</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">## $seguros
+##    becarios  participar   colaborar   integrate      latino    positiva 
+##        0.41        0.39        0.38        0.38        0.38        0.38 
+## trayectoria    programa   corretaje     fianzas        life     mexican 
+##        0.38        0.35        0.31        0.31        0.31        0.31 
+##         new   reaseguro      siendo    universe        york 
+##        0.31        0.31        0.31        0.31        0.31</code></pre></figure>
+
+<p>For the term ‘titulado’ (degree obtained) there is no surprise, most words make reference to the final situation of the career (‘intern’), to the requirements to work (‘indispensable’).</p>
+
+<p>The term ‘manager’ (manager) seemed to me to be more interesting, since it shows terms related to soft skills (‘conciliate’, ‘coaching’, ‘agree’, ‘obtain’). This may suggest a development beyond the technician in someone seeking a management position.</p>
+
+<p>If an actuary would like to end up in the insurance business, he could expect a lot of intern positions, as the correlation between the word insurance and ‘becario’ (intern) is 0.41%. It would be useful to investigate terms such as ‘brokerage’ or ‘reinsurance’.</p>
+
+<p>If we wanted to group the most related terms in all the vacancies we could use a simple analysis of conglomerates with an Euclidean method. The following code shows how to do this:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="c1"># For this analysis if we remove the most scarce terms to use a simple model 
+# of clusters using a Euclidean measure
+</span><span class="n">dtmss</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">removeSparseTerms</span><span class="p">(</span><span class="n">dtm</span><span class="p">,</span><span class="w"> </span><span class="m">0.9</span><span class="p">)</span><span class="w">
+
+</span><span class="n">d</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dist</span><span class="p">(</span><span class="n">t</span><span class="p">(</span><span class="n">dtmss</span><span class="p">),</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s2">"euclidian"</span><span class="p">)</span><span class="w">   
+</span><span class="n">fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">hclust</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s2">"ward.D"</span><span class="p">)</span><span class="w">   
+
+</span><span class="n">plot.new</span><span class="p">()</span><span class="w">
+</span><span class="n">plot</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">hang</span><span class="o">=</span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="n">xlab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">ylab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="n">sub</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Grouped with 4 clusters
+</span><span class="n">groups</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cutree</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="m">4</span><span class="p">)</span><span class="w">   
+</span><span class="n">rect.hclust</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="n">border</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/../figs/actuary-jobs-mx/unnamed-chunk-14-1.png" title="center" alt="center" style="display: block; margin: auto;" /></p>
+
+<p>We can notice that groups of words are related to the different areas in which an actuary can perform. ‘Economics’, ‘finance’ and ‘management’ are clearly shown in a group, while ‘engineering’, ‘systems’ and ‘industrial’ are grouped together in another conglomerate.</p>
+
+<p>Here we can interpret the result in different ways. Regularly, an actuarial vacancy is not specifically for someone graduating from that bachelor’s degree alone. For the characteristics in the formation of an actuary, we can assume that the professional can perform tasks ranging from the Economy, to some engineering.</p>
+
+<h1 id="how-much-does-an-actuary-earn-in-mexico">How much does an actuary earn in Mexico?</h1>
+
+<p>Finally, let us analyze the average salary of an Actuary in Mexico. With the data collected we can calculate the average salary offered in the vacancies. Removing atypical values in our sample we can represent the salaries offered in the following graph:</p>
+
+<p><img src="/../figs/actuary-jobs-mx/unnamed-chunk-16-1.png" title="center" alt="center" style="display: block; margin: auto;" /></p>
+
+<p>In the graph above we can see that although the average salary offered is only $13,000 MXN per month, 50% of jobs offer a fairly encouraging average salary if we take into account other careers.</p>
+
+<p>We can observe these data in more detail with the following instruction:</p>
+
+<figure class="highlight"><pre><code class="language-r" data-lang="r"><span class="n">summary</span><span class="p">(</span><span class="n">actSalarios</span><span class="o">$</span><span class="n">avg_salario</span><span class="p">)</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##    2000   10000   13000   15700   20000   42500      10</code></pre></figure>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>The work of the actuary in Mexico has been increasing during the last years in Mexico, every day more companies are benefited with the skills and knowledge that an actuary can offer. Although today, traditional companies (banks, insured and financial) are responsible for hiring actuaries for the most part, we can observe that little by little the actuary gains ground in other parts of the country and every day is more diversified responsibilities of an actuary</p>
+
+<p>A favorable bet is to study a bachelor’s degree in Actuarial Science as the average salaries obtained exceed in good measure the national averages of any other career. Although the demand for new tools and knowledge makes Actuarial Science a demanding career, with a wide variety of topics to master, it seems that it is always well recomposed.</p>
+
+<p><strong>You can also reproduce this exercise by changing the query for your career and discover something unique!</strong></p>
+
+<p>Have fun!</p>
+
+
+  </div>
+
+  <footer class="postNavigation">
+  
+  
+    <a class="postNext" href="/2017/03/05/publish-rmarkdown-your-blog.html">
+        Publish your Analysis in a Blog &raquo;
+    </a>
+  
+  </footer>
+
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading small-site-title">Ian CR</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list footer-content">
+          <li>Powered By <a href="http://github.com/hemangsk/Gravity">Gravity</a></li>
+          <li>Made with <i class="fa fa-heart"></i> on <a href="http://jekyllrb.com"><span style="color:black">{ { Jekyll } }</a></span></li>
+
+
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2 footer-content">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/carian2996"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">carian2996</span></a>
+
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/carian_2996"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">carian_2996</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3 site-description">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
