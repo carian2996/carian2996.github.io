@@ -4,7 +4,7 @@ title : About Me
 permalink: /about/
 ---
 
-I'm a passionate for data and above all, everything you can find behind them. Currently I work as data scientist junior at [Conlana Capital](https://www.conlana.com/#/conocenos), a micro lending startup. 
+I'm a passionate for data and above all, everything you can find behind them. Currently I work as a data scientist in a fintech startup in Mexico City. 
 
 I studied a bachelor in Actuarial Science, during this period I was intern in the [Central Bank of Mexico](http://www.banxico.org.mx/indexEn.html) for six months working on R projects. Then I did a research stay in [CIMAT](http://www.cimat.mx/en) (Mathematical Research Center, Guanajuato) where I developed my thesis on [Optimal Stopping Problems](http://132.248.9.195/ptd2016/noviembre/307065209/Index.html).
 
